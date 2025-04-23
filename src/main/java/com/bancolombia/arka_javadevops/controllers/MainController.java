@@ -14,6 +14,12 @@ public class MainController {
     public String holaMundo() {
         return "Hola mundo";
     }
+
+    @GetMapping("/buscar")
+    public String buscar(@RequestParam(value = "q", required = false) String busqueda) {
+        return "Estas buscando " + busqueda;
+    }
+    
     
 
 }
