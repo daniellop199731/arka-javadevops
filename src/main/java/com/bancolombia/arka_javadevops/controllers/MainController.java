@@ -2,6 +2,7 @@ package com.bancolombia.arka_javadevops.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,6 +20,12 @@ public class MainController {
     public String buscar(@RequestParam(value = "q", required = false) String busqueda) {
         return "Estas buscando " + busqueda;
     }
+
+    @GetMapping("/usuarios/{id}")
+    public String mostrar(@PathVariable("id") String idUsuario) {
+        return "Se solicitó info del usuario con  id: " + idUsuario;
+    }
+    
     
     
 
