@@ -21,6 +21,9 @@ public class MainController {
         return "Estas buscando " + busqueda;
     }
 
+    /*
+     * Ejemplo de URL en postman: http://localhost:8080/main/usuarios/1040755872
+     */
     @GetMapping("/usuarios/{id}")
     public String mostrar(@PathVariable("id") String idUsuario) {
         return "Se solicitó info del usuario con  id: " + idUsuario;
