@@ -12,7 +12,7 @@ public interface PerfilRepository extends CrudRepository<Perfil, Integer>{
 
   // Aquí se pueden agregar métodos adicionales de consulta personalizada si es necesario
   //Ejemplo
-  List<Perfil> findByNombre(String nombrePerfil);
+  //List<Perfil> findByNombre(String nombrePerfil);
   
   /*
    * Con solo extender CrudRepository, obtienes automaticamente métodos como:
