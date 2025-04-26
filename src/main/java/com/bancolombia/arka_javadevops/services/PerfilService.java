@@ -30,12 +30,16 @@ public class PerfilService {
         return perfilRepository.findById(idPerfil);
     }
 
-    public Perfil creaPerfil(Perfil perfil){
+    public Perfil creaNuevoPerfil(Perfil perfil){
         return perfilRepository.save(perfil);
     }
 
     public void eliminarPerfil(int idPerfil){
         perfilRepository.deleteById(idPerfil);
+    }
+
+    public Perfil actualizarPerfil(Perfil perfil){
+        return perfilRepository.save(perfil);
     }
 
     

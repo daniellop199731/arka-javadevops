@@ -39,7 +39,7 @@ public class MainController {
     /*
      * Ejemplo de URL en postman: http://localhost:8080/main/usuarios/1040755872
      */
-    @GetMapping(value = {"/usuarios/{id}", "/usuarios"})
+    @GetMapping(value = {"/usuarios2/{id}", "/usuarios"})
     public ResponseEntity<String> mostrar(@PathVariable(value = "id", required = false) String idUsuario) {
 
         if(idUsuario != null){
