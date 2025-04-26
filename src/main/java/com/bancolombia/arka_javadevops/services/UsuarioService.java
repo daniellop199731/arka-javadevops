@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.repositories.UsuarioRepository;
+import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 @Service
 public class UsuarioService {
@@ -15,43 +16,121 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    private static ResponseObject rObj;
+
     public UsuarioService (UsuarioRepository usuarioRepository){
         this.usuarioRepository = usuarioRepository;
     }
 
-    public List<Usuario> obtenerUsuarios(){
-        return (List<Usuario>) usuarioRepository.findAll();
+    public ResponseObject obtenerUsuarios(){
+        rObj = new ResponseObject();
+        rObj.setObj((List<Usuario>) usuarioRepository.findAll());
+        rObj.setMsj("Consulta ejecutada con exito");
+        rObj.setAsSuccessfully();
+        return rObj;
     }
 
-    public Optional<Usuario> obtenerUsuarioPorId(int idUsuario){
-        return usuarioRepository.findById(idUsuario);
+    public ResponseObject obtenerUsuariosPorOrdenNombres(){
+        rObj = new ResponseObject();
+        rObj.setAsSuccessfully();
+        rObj.setMsj("Consulta ejecutada con exito");
+        rObj.setObj(usuarioRepository.usuariosOrderByNombres());
+        return rObj;
     }
 
-    public Usuario crearNuevUsuario(Usuario usuario){
-        Usuario usuarioNuevo = usuarioRepository.save(usuario);
-        /*
-         * Problema 1
-         * En la BD el la primary key de usuarios es autoincrementable
-         * Cuando hibernate genera al nuevo usuario no devuelve el nuevo ID en
-         * el objeto, pero si la demas informacion, puede ser que es porque en 
-         * la clase entity no se usa @GenerateValue en el campo marcado con @Id
-         * 
-         * Solucion:
-         * En la clase entity, el atributo marcado con @Id, se debe marcar con @GenerateValue
-         * con estrategia IDENTITY, con eso se indica que ese campo se enlaza con la secuentacia 
-         * que tenga el campo en la base de datos
-         */
-        return usuarioNuevo; 
+    public ResponseObject obtenerUsuarioPorId(int idUsuario){
+        rObj = new ResponseObject();
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+        if(usuario.isPresent()){
+            rObj.setObj(usuario);
+            rObj.setMsj("Usuario encontrado");
+            rObj.setAsSuccessfully();
+        } else {
+            rObj.setMsj("Usuario no encontrado");
+        }
+        return rObj;
     }
 
-    public Optional<Usuario> eliminarUsuarioPorId(int idUsuario){
-        Optional<Usuario> usuarioAEliminar = usuarioRepository.findById(idUsuario);
-        usuarioRepository.deleteById(idUsuario);
-        return usuarioAEliminar;
+    public ResponseObject crearNuevUsuario(Usuario usuario){
+        rObj = new ResponseObject();
+        Usuario usuarioNuevo = usuarioRepository.findByIdentificacionUsuario(
+            usuario.getIdentificacionUsuario());
+        if(usuarioNuevo != null){
+            rObj.setObj(usuarioNuevo);
+            rObj.setMsj("El usuario con la identificacion "
+                .concat(usuario.getIdentificacionUsuario()).concat(" ya existe en el sistema"));            
+        } else {
+            /**
+             * LOGICA ANTES DE GUARDAR EN BASE DE DATOS, AQUI
+             * ...
+             */
+            usuarioNuevo = usuarioRepository.save(usuario);
+            rObj.setObj(usuarioNuevo);
+            rObj.setMsj("Usuario creado con exito");
+            rObj.setAsSuccessfully();
+        }
+        return rObj; 
     }
 
-    public Usuario actualizarUsuario(Usuario usuario){
-        return usuarioRepository.save(usuario);
+    public ResponseObject actualizarUsuario(Usuario usuario){
+        rObj = new ResponseObject();
+        Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(usuario.getIdUsuario());
+        if(usuarioEncontrado.isPresent()){
+            /**
+             * POSIBLE LOGICA ANTES DE ACTUALIZAR EN BASE DE DATOS, AQUI
+             * ...
+             */            
+            rObj.setObj(usuarioRepository.save(usuario));
+            rObj.setMsj("Usuario actualizado con exito");
+            rObj.setAsSuccessfully();
+        } else {
+            rObj.setObj(usuarioEncontrado);
+            rObj.setMsj("El usuario a actualizar no existe");
+        }
+        return rObj;
+    }    
+
+    public ResponseObject eliminarUsuarioPorId(int idUsuario){
+        rObj = new ResponseObject();
+        Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(idUsuario);        
+        if(usuarioEncontrado.isPresent()){
+            /**
+             * LOGICA ANTES DE ELIMINAR EN BASE DE DATOS, AQUI
+             * ...
+             */            
+            rObj.setObj(usuarioRepository.findById(idUsuario));
+            rObj.setMsj("Usuario eliminado con exito");
+            rObj.setAsSuccessfully();
+        } else {
+            rObj.setMsj("El usuario que se quiere eliminar no existe");
+        }
+        return rObj;
+    }
+
+    public ResponseObject obtenerUsuariosPorNombres(String nombresuString){
+        rObj = new ResponseObject();
+        List<Usuario> usuarios = usuarioRepository.findByNombresUsuario(nombresuString);
+        if(usuarios.size() > 0){
+            rObj.setObj(usuarios);
+            rObj.setMsj("Usuarios encontrados");
+            rObj.setAsSuccessfully();
+        } else {
+            rObj.setMsj("De momento no existen usuarios");
+        }
+        return rObj;
+    }
+
+    public ResponseObject obtenerUsuarioPorIdentificacion(String identificacionUsuario){
+        rObj = new ResponseObject();
+        Usuario usuario = usuarioRepository.findByIdentificacionUsuario(identificacionUsuario);
+        if(usuario != null){
+            rObj.setObj(usuario);
+            rObj.setMsj("Usuario encontrado");
+            rObj.setAsSuccessfully();
+        } else {
+            rObj.setMsj("No existe usuario con identificacion ".concat(identificacionUsuario));
+        }
+        return rObj;
     }
 
 }
