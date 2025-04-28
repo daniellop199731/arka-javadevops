@@ -41,16 +41,6 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/ordenPorNombres")
-    public ResponseEntity<ResponseObject> obtenerUsuariosPorOrdenNombres(){
-        try{
-            return new ResponseEntity<>(usuarioService.obtenerUsuariosPorOrdenNombres(), HttpStatus.OK);
-        } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @GetMapping("/{idUsuario}")
     public ResponseEntity<ResponseObject> obtenerUsuarioPorId(@PathVariable(value = "idUsuario") int idUsuario){
         try{
@@ -61,6 +51,7 @@ public class UsuarioController {
         }        
     }
 
+    //Define una ruta qye permita buscar y devolver una lista de usuarios filtrados por su nombre
     @GetMapping("/busquedaPorNombre")
     public ResponseEntity<ResponseObject> obtenerUsuariosPorNombre(@RequestParam(value = "nombresUsuario", required = true) String nombreUsuario) {
         try{
@@ -69,6 +60,17 @@ public class UsuarioController {
             return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }        
+    }
+
+    //Define una ruta que te devuelva la lista de todos los usuarios ordenados alfabéticamente
+    @GetMapping("/obtenerUsuariosPorOrdenNombres")
+    public ResponseEntity<ResponseObject> obtenerUsuariosPorOrdenNombres(){
+        try{
+            return new ResponseEntity<>(usuarioService.obtenerUsuariosPorOrdenNombres(), HttpStatus.OK);
+        } catch(Exception ex){
+            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+                , HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/busquedaPorIdentificacion")
