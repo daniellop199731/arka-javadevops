@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bancolombia.arka_javadevops.models.Proveedor;
-import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.repositories.ProveedorRepository;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
