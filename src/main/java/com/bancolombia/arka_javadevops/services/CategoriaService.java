@@ -24,16 +24,21 @@ public class CategoriaService {
 
     public ResponseObject obtenerCategorias(){
         rObj = new ResponseObject();
-        rObj.setMsj("Consulta ejecutada con exito");
-        rObj.setAsSuccessfully();
-        rObj.setObj(categoriaRepository.findAll());
+        List<Categoria> categorias = (List<Categoria>) categoriaRepository.findAll(); 
+        if(!categorias.isEmpty()){
+            rObj.setMsj("Consulta ejecutada con exito");
+            rObj.setObj(categorias);
+        } else {
+            rObj.setMsj("No hay categorías de productos creadas");            
+            rObj.setAsSuccessfully();
+        }
         return rObj;
     }
 
     public ResponseObject obtenerCategoriasPorNombre(String nombreCategoria){
         rObj = new ResponseObject();
         List<Categoria> categorias = categoriaRepository.findByNombreCategoriaLike("%"+nombreCategoria+"%");
-        if(categorias.size() > 0){
+        if(!categorias.isEmpty()){
             rObj.setMsj("Categorias encontradas");
             rObj.setAsSuccessfully();
             rObj.setObj(categorias);
@@ -52,7 +57,7 @@ public class CategoriaService {
                 .concat(" ya existe"));
         } else {
             rObj.setObj(categoriaRepository.save(categoria));
-            rObj.setMsj("Categoria creada con exito");
+            rObj.setMsj("Categoria guardada con éxito");
             rObj.setAsSuccessfully();
         }
         return rObj;
