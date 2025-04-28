@@ -116,6 +116,7 @@ public class UsuarioService {
             rObj.setAsSuccessfully();
         } else {
             rObj.setMsj("De momento no existen usuarios");
+            rObj.setAsSuccessfully();
         }
         return rObj;
     }
@@ -129,6 +130,7 @@ public class UsuarioService {
             rObj.setAsSuccessfully();
         } else {
             rObj.setMsj("No existe usuario con identificacion ".concat(identificacionUsuario));
+            rObj.setAsSuccessfully();
         }
         return rObj;
     }
