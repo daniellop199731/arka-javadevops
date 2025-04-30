@@ -113,9 +113,15 @@ public class ProductoService {
         }
 
         if(continueToSave){
-            rObj.setObj(productoRepository.save(producto));
-            rObj.setMsj("Producto actualizado con exito");
-            rObj.setAsSuccessfully();
+            Optional<Producto> productoEncontrado = productoRepository.findById(producto.getIdProducto());
+            if(productoEncontrado.isPresent()){
+                rObj.setObj(productoRepository.save(producto));
+                rObj.setMsj("Producto actualizado con exito");
+                rObj.setAsSuccessfully();                              
+            } else {
+                rObj.setMsj("El producto a actualizar no existe");
+            }
+            productoEncontrado = null;
         }        
 
         return rObj;

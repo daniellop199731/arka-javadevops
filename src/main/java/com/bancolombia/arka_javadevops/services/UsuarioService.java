@@ -51,21 +51,21 @@ public class UsuarioService {
         return rObj;
     }
 
-    public ResponseObject crearNuevUsuario(Usuario usuario){
+    public ResponseObject crearNuevoUsuario(Usuario usuario){
         rObj = new ResponseObject();
-        Usuario usuarioNuevo = usuarioRepository.findByIdentificacionUsuario(
-            usuario.getIdentificacionUsuario());
-        if(usuarioNuevo != null){
-            rObj.setObj(usuarioNuevo);
+        boolean continueToSave = true;
+        if(this.existeUsuarioPorIdentificacion(usuario.getIdentificacionUsuario())){            
             rObj.setMsj("El usuario con la identificacion "
                 .concat(usuario.getIdentificacionUsuario()).concat(" ya existe en el sistema"));            
-        } else {
+                continueToSave = false;
+        } 
+
+        if(continueToSave){
             /**
              * LOGICA ANTES DE GUARDAR EN BASE DE DATOS, AQUI
              * ...
-             */
-            usuarioNuevo = usuarioRepository.save(usuario);
-            rObj.setObj(usuarioNuevo);
+             */            
+            rObj.setObj(usuarioRepository.save(usuario));
             rObj.setMsj("Usuario creado con exito");
             rObj.setAsSuccessfully();
         }
@@ -74,18 +74,27 @@ public class UsuarioService {
 
     public ResponseObject actualizarUsuario(Usuario usuario){
         rObj = new ResponseObject();
-        Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(usuario.getIdUsuario());
-        if(usuarioEncontrado.isPresent()){
-            /**
-             * POSIBLE LOGICA ANTES DE ACTUALIZAR EN BASE DE DATOS, AQUI
-             * ...
-             */            
-            rObj.setObj(usuarioRepository.save(usuario));
-            rObj.setMsj("Usuario actualizado con exito");
-            rObj.setAsSuccessfully();
-        } else {
-            rObj.setObj(usuarioEncontrado);
-            rObj.setMsj("El usuario a actualizar no existe");
+        boolean continueToSave = true;
+        
+        if(this.existeUsuarioPorIdentificacionParaActualizar(usuario)){
+            rObj.setMsj("Ya existe un usuario con la identificacion ".concat(usuario.getIdentificacionUsuario()));
+            continueToSave = false;            
+        }
+
+        if(continueToSave){
+            Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(usuario.getIdUsuario());
+            if(usuarioEncontrado.isPresent()){
+                /**
+                 * POSIBLE LOGICA ANTES DE ACTUALIZAR EN BASE DE DATOS, AQUI
+                 * ...
+                 */            
+                rObj.setObj(usuarioRepository.save(usuario));
+                rObj.setMsj("Usuario actualizado con exito");
+                rObj.setAsSuccessfully();                
+            } else {
+                rObj.setMsj("El usuario a actualizar no existe");
+            }
+            usuarioEncontrado = null;
         }
         return rObj;
     }    
@@ -134,5 +143,30 @@ public class UsuarioService {
         }
         return rObj;
     }
+
+    public boolean existeUsuarioPorIdentificacion(String identificacionUsuario){
+        if(identificacionUsuario != null){
+            Usuario usuarioPorIdentificacion = usuarioRepository.findByIdentificacionUsuario(identificacionUsuario);
+            if(usuarioPorIdentificacion != null){
+                usuarioPorIdentificacion = null;
+                return true;
+            }
+        }
+        return false;
+    }    
+
+    public boolean existeUsuarioPorIdentificacionParaActualizar(Usuario usuarioActualizar){
+        if(usuarioActualizar.getIdentificacionUsuario() != null){
+            Usuario usuarioPorIdentificacion = usuarioRepository.findByIdentificacionUsuario(usuarioActualizar.getIdentificacionUsuario());
+            if(usuarioPorIdentificacion != null && 
+                ((usuarioPorIdentificacion != null ? usuarioPorIdentificacion.getIdUsuario():0)
+                    !=
+                    (usuarioActualizar.getIdUsuario())) ){
+                        usuarioPorIdentificacion = null;
+                return true;
+            }
+        }
+        return false;
+    }    
 
 }

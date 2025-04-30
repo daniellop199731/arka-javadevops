@@ -87,7 +87,7 @@ public class UsuarioController {
     @PostMapping("/crearNuevo")
     public ResponseEntity<ResponseObject> crearNuevoUsuario(@RequestBody Usuario usuario) {
         try{
-            return new ResponseEntity<>(usuarioService.crearNuevUsuario(usuario), HttpStatus.CREATED);
+            return new ResponseEntity<>(usuarioService.crearNuevoUsuario(usuario), HttpStatus.CREATED);
         } catch(DataIntegrityViolationException ex) {        
             return new ResponseEntity<>(new ResponseObject("Error en los campos enviados", ex)
                 , HttpStatus.BAD_REQUEST);
