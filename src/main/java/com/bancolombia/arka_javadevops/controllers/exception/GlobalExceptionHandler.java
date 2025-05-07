@@ -3,22 +3,41 @@ package com.bancolombia.arka_javadevops.controllers.exception;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
 
-@ControllerAdvice
+import com.bancolombia.arka_javadevops.utils.ResponseObject;
+
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    //MethodArgumentNotValidException: Se dispara cuando @Valid incumple algun atributo de la clase entity
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex){
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(err -> {
-            errors.put(err.getField(), err.getDefaultMessage());
-        });
+    private static ResponseObject rObj;
 
-        return ResponseEntity.badRequest().body(errors);
+    //WebExchangeBindException: Se dispara cuando @Valid incumple algun atributo de la clase entity
+    @ExceptionHandler(WebExchangeBindException.class)
+    public ResponseEntity<ResponseObject> handleWebExchangeBindException(WebExchangeBindException ex) {
+        rObj = new ResponseObject();
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+        });
+        rObj.setAsNotSuccessfully();
+        rObj.setMsj(errors);
+        return ResponseEntity.badRequest().body(rObj);
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ResponseObject> handleDataIntegrityViolationException(DataIntegrityViolationException ex){
+        rObj = new ResponseObject();
+        rObj.setAsNotSuccessfully();
+        rObj.setMsj(ex.getMessage());
+        return ResponseEntity.badRequest().body(rObj);
+    }
+
+
+
+    
 }

@@ -9,9 +9,16 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "usuarios")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Usuario {
 
     @Id
@@ -23,108 +30,37 @@ public class Usuario {
     private int idUsuario;
 
     @NotNull
-    @NotBlank
+    @NotBlank(message = "Debe proporcionar una ideantificacion")
+    @Size(min = 9, max = 15, message = "Debe proporcionar una ideantificacion valida")
     private String identificacionUsuario;
 
     @NotNull
-    @Email
+    @Email(message = "Debe proporcionar una direccion de correo con una estructura valida")
     private String correoElectronicoUsuario;
 
     @NotNull
-    @NotBlank
+    @NotBlank(message = "Debe proporcionar los nombres")
+    @Size(min = 3, max = 45)
     private String nombresUsuario;
 
     @NotNull
-    @NotBlank    
+    @NotBlank(message = "Debe proporcionar los apellidos")   
+    @Size(min = 5, max = 45)
     private String apellidosUsuario;
 
     @NotNull
-    @NotBlank    
+    @NotBlank(message = "Debe proporcionar una direccion de despacho")
     private String direccionDespachoUsuario;
 
     @NotNull
-    @NotBlank    
+    @NotBlank(message = "Debe proporcionar una contraseña")
+    @Size(min = 8, max = 45)
     private String contrasennaUsuario;
 
     private String nicknameUsuario;
 
-    @Positive
+    @Positive(message = "Debe proporcionar un ID de perfil valido")
     private int idPerfilUsuario;
-
-    public Usuario() {
-    }
-
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public String getIdentificacionUsuario() {
-        return identificacionUsuario;
-    }
-
-    public void setIdentificacionUsuario(String identificacionUsuario) {
-        this.identificacionUsuario = identificacionUsuario;
-    }
-
-    public String getCorreoElectronicoUsuario() {
-        return correoElectronicoUsuario;
-    }
-
-    public void setCorreoElectronicoUsuario(String correoElectronicoUsuario) {
-        this.correoElectronicoUsuario = correoElectronicoUsuario;
-    }
-
-    public String getNombresUsuario() {
-        return nombresUsuario;
-    }
-
-    public void setNombresUsuario(String nombresUsuario) {
-        this.nombresUsuario = nombresUsuario;
-    }
-
-    public String getApellidosUsuario() {
-        return apellidosUsuario;
-    }
-
-    public void setApellidosUsuario(String apellidosUsuario) {
-        this.apellidosUsuario = apellidosUsuario;
-    }
-
-    public String getDireccionDespachoUsuario() {
-        return direccionDespachoUsuario;
-    }
-
-    public void setDireccionDespachoUsuario(String direccionDespachoUsuario) {
-        this.direccionDespachoUsuario = direccionDespachoUsuario;
-    }
-
-    public String getContrasennaUsuario() {
-        return contrasennaUsuario;
-    }
-
-    public void setContrasennaUsuario(String contrasennaUsuario) {
-        this.contrasennaUsuario = contrasennaUsuario;
-    }
-
-    public String getNicknameUsuario() {
-        return nicknameUsuario;
-    }
-
-    public void setNicknameUsuario(String nicknameUsuario) {
-        this.nicknameUsuario = nicknameUsuario;
-    }
-
-    public int getIdPerfilUsuario() {
-        return idPerfilUsuario;
-    }
-
-    public void setIdPerfilUsuario(int idPerfilUsuario) {
-        this.idPerfilUsuario = idPerfilUsuario;
-    }
 
     
 

@@ -8,8 +8,8 @@ import com.bancolombia.arka_javadevops.services.UsuarioService;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,21 +24,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/usuarios")
+@RequiredArgsConstructor
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
-
-    public UsuarioController (UsuarioService usuarioService){
-        this.usuarioService = usuarioService;
-    }
+    private final UsuarioService usuarioService;
 
     @GetMapping("")
     public ResponseEntity<ResponseObject> obtenerUsuarios() {        
         try{
             return new ResponseEntity<>(usuarioService.obtenerUsuarios(), HttpStatus.OK);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -48,7 +44,7 @@ public class UsuarioController {
         try{
             return new ResponseEntity<>(usuarioService.obtenerUsuarioPorId(idUsuario), HttpStatus.OK);
         } catch(Exception ex) {
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }        
     }
@@ -59,7 +55,7 @@ public class UsuarioController {
         try{
             return new ResponseEntity<>(usuarioService.obtenerUsuariosPorNombres(nombreUsuario), HttpStatus.OK);
         } catch(Exception ex){            
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }        
     }
@@ -70,7 +66,7 @@ public class UsuarioController {
         try{
             return new ResponseEntity<>(usuarioService.obtenerUsuariosPorOrdenNombres(), HttpStatus.OK);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -81,7 +77,7 @@ public class UsuarioController {
             return new ResponseEntity<>(
                 usuarioService.obtenerUsuarioPorIdentificacion(identificacionUsuario), HttpStatus.OK);      
         }catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }        
     }        
@@ -91,10 +87,10 @@ public class UsuarioController {
         try{
             return new ResponseEntity<>(usuarioService.crearNuevoUsuario(usuario), HttpStatus.CREATED);
         } catch(DataIntegrityViolationException ex) {        
-            return new ResponseEntity<>(new ResponseObject("Error en los campos enviados", ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error en los campos enviados", ex)
                 , HttpStatus.BAD_REQUEST);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error : ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error : ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -104,10 +100,10 @@ public class UsuarioController {
         try{            
             return new ResponseEntity<>(usuarioService.actualizarUsuario(usuario), HttpStatus.OK);
         } catch(DataIntegrityViolationException ex){            
-            return new ResponseEntity<>(new ResponseObject("Error en los campos enviados", ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error en los campos enviados", ex)
                 , HttpStatus.BAD_REQUEST);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error : ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error : ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -117,8 +113,8 @@ public class UsuarioController {
         try{
             return new ResponseEntity<>(usuarioService.eliminarUsuarioPorId(idUsuario), HttpStatus.OK);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }        
-    }
+    }   
 }

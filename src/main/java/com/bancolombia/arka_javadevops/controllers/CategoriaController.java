@@ -36,7 +36,7 @@ public class CategoriaController {
         try {
             return new ResponseEntity<>(categoriaService.obtenerCategorias(), HttpStatus.OK);
         } catch (Exception ex) {
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -46,7 +46,7 @@ public class CategoriaController {
         try{
             return new ResponseEntity<>(categoriaService.obtenerCategoriasPorNombre(nombreCategoria), HttpStatus.OK);
         }catch (Exception ex) {
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -56,10 +56,10 @@ public class CategoriaController {
         try{
             return new ResponseEntity<>(categoriaService.crearNueva(categoria), HttpStatus.CREATED);
         } catch(DataIntegrityViolationException ex){
-            return new ResponseEntity<>(new ResponseObject("Error en los campos enviados", ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error en los campos enviados", ex)
                 , HttpStatus.BAD_REQUEST);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -69,10 +69,10 @@ public class CategoriaController {
         try{
             return new ResponseEntity<>(categoriaService.actualizarCategoria(categoria), HttpStatus.OK);
         } catch(DataIntegrityViolationException ex){
-            return new ResponseEntity<>(new ResponseObject("Error en los campos enviados", ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error en los campos enviados", ex)
                 , HttpStatus.BAD_REQUEST);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

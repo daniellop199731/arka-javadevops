@@ -36,7 +36,7 @@ public class ProductoController {
         try{
             return new ResponseEntity<>(productoService.obtenerProductos(), HttpStatus.OK);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -46,7 +46,7 @@ public class ProductoController {
         try{
             return new ResponseEntity<>(productoService.obtenerProductoPorId(idProducto), HttpStatus.OK);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -57,7 +57,7 @@ public class ProductoController {
         try{
             return new ResponseEntity<>(productoService.productosNombreDescripcion(texto), HttpStatus.OK);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }    
@@ -68,7 +68,7 @@ public class ProductoController {
         try{
             return new ResponseEntity<>(productoService.productosOrdenadosAsc(), HttpStatus.OK);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }    
@@ -79,7 +79,7 @@ public class ProductoController {
         try{
             return new ResponseEntity<>(productoService.productosPorRangoPrecio(precioMinimo, precioMaximo), HttpStatus.OK);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }    
@@ -89,10 +89,10 @@ public class ProductoController {
         try{
             return new ResponseEntity<>(productoService.crearNuevo(producto), HttpStatus.OK);
         } catch(DataIntegrityViolationException ex){
-            return new ResponseEntity<>(new ResponseObject("Error en los campos enviados", ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error en los campos enviados", ex)
                 , HttpStatus.BAD_REQUEST);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -102,10 +102,10 @@ public class ProductoController {
         try{
             return new ResponseEntity<>(productoService.actualizar(producto), HttpStatus.OK);
         } catch(DataIntegrityViolationException ex){
-            return new ResponseEntity<>(new ResponseObject("Error en los campos enviados", ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error en los campos enviados", ex)
                 , HttpStatus.BAD_REQUEST);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -115,7 +115,7 @@ public class ProductoController {
         try{
             return new ResponseEntity<>(productoService.eliminar(idProducto), HttpStatus.OK);
         } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject("Error: ".concat(ex.getMessage()), ex)
+            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
         }        
     }

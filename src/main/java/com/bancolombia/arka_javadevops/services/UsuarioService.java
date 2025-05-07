@@ -34,9 +34,9 @@ public class UsuarioService {
 
     public ResponseObject obtenerUsuarios(){
         rObj = new ResponseObject();
-        rObj.setObj((List<Usuario>) usuarioRepository.findAll());
-        rObj.setMsj("Consulta ejecutada con exito");
         rObj.setAsSuccessfully();
+        rObj.setMsj("Consulta ejecutada con exito");        
+        rObj.setObj((List<Usuario>) usuarioRepository.findAll());
         return rObj;
     }
 
@@ -117,6 +117,7 @@ public class UsuarioService {
              * LOGICA ANTES DE ELIMINAR EN BASE DE DATOS, AQUI
              * ...
              */            
+            usuarioRepository.deleteById(idUsuario);
             rObj.setObj(usuarioRepository.findById(idUsuario));
             rObj.setMsj("Usuario eliminado con exito");
             rObj.setAsSuccessfully();
@@ -153,6 +154,22 @@ public class UsuarioService {
         }
         return rObj;
     }
+
+    //////////////////////////////////////
+    public ResponseObject crearUsuarioSencillo(Usuario usuario){
+        rObj = new ResponseObject();
+        if(!this.existeUsuarioPorIdentificacion(usuario.getIdentificacionUsuario())){
+            rObj.setAsSuccessfully();
+            rObj.setMsj("Usuario creado con exito");
+            rObj.setObj(usuarioRepository.save(usuario));
+        } else {
+            rObj.setAsNotSuccessfully();;
+            rObj.setMsj("Ya existe un usuario con la identificacion "
+                .concat(usuario.getIdentificacionUsuario()));            
+        }
+        return rObj;
+    }
+    //////////////////////////////////////
 
     public boolean existeUsuarioPorIdentificacion(String identificacionUsuario){
         if(identificacionUsuario != null){
