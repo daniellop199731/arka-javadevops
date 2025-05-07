@@ -10,17 +10,27 @@ import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.repositories.UsuarioRepository;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
     private static ResponseObject rObj;
+
+    /* @RequiredArgsConstructor //Reemplaza el constructor
+        La etiqueta lo que hara es que a todos los atributos con final, lo tendra encuenta
+        en el contructor implicito que invoca @RequiredArgsConstructor
+
+        Si se tiene final no es necesario el @Autowired
 
     public UsuarioService (UsuarioRepository usuarioRepository){
         this.usuarioRepository = usuarioRepository;
     }
+    */    
 
     public ResponseObject obtenerUsuarios(){
         rObj = new ResponseObject();

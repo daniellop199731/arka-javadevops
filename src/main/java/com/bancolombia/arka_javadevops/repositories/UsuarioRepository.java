@@ -15,7 +15,11 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Integer> {
 
     Usuario findByIdentificacionUsuario(String identificacionUsuario);
 
+    //@NativeQuery
     @Query("select u from Usuario u order by nombresUsuario asc")
     List<Usuario> usuariosOrderByNombres();
+
+    //Doc palabras reservadas de JPA
+    //https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html
 
 }
