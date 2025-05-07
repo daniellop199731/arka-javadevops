@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -88,8 +87,7 @@ public class UsuarioController {
     }        
 
     @PostMapping("/crearNuevo")
-    public ResponseEntity<ResponseObject> crearNuevoUsuario(@Valid @RequestBody Usuario usuario
-        , BindingResult result) {
+    public ResponseEntity<ResponseObject> crearNuevoUsuario(@Valid @RequestBody Usuario usuario) {
         try{
             return new ResponseEntity<>(usuarioService.crearNuevoUsuario(usuario), HttpStatus.CREATED);
         } catch(DataIntegrityViolationException ex) {        

@@ -5,6 +5,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "usuarios")
@@ -18,20 +22,33 @@ public class Usuario {
      */    
     private int idUsuario;
 
+    @NotNull
+    @NotBlank
     private String identificacionUsuario;
 
+    @NotNull
+    @Email
     private String correoElectronicoUsuario;
 
+    @NotNull
+    @NotBlank
     private String nombresUsuario;
 
+    @NotNull
+    @NotBlank    
     private String apellidosUsuario;
 
+    @NotNull
+    @NotBlank    
     private String direccionDespachoUsuario;
 
+    @NotNull
+    @NotBlank    
     private String contrasennaUsuario;
 
     private String nicknameUsuario;
 
+    @Positive
     private int idPerfilUsuario;
 
     public Usuario() {
