@@ -6,9 +6,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity //Indica a Spring que esta clase es un bean y que refleja informacion de la base de datos
 @Table(name = "perfiles") //Se especifica el nombre de la base de datos
+@Data //Lombok, geters y seters envevidos
+@NoArgsConstructor //Lombok: Constructor sin atributos envevido
+@AllArgsConstructor //Lombok: Contructor con todos los atributos envevido
 public class Perfil {
 
     @Id //Indica que este atributo es el ID de la tabla
@@ -18,27 +26,9 @@ public class Perfil {
 
     //Si el atributo se llama igual a la columna de la tabla la anotacion @Column 
     //no es necesaria
-    @Column(name = "nombrePerfil")                                 
-    private String nombrePerfil; 
-
-    //Para JPA es necesarios un constructor vacio
-    public Perfil() {
-    }
-
-    public int getIdPerfil() {
-        return idPerfil;
-    }
-
-    public void setIdPerfil(int idPerfil) {
-        this.idPerfil = idPerfil;
-    }
-
-    public String getNombrePerfil() {
-        return nombrePerfil;
-    }
-
-    public void setNombrePerfil(String nombrePerfil) {
-        this.nombrePerfil = nombrePerfil;
-    }
+    @Column(name = "nombrePerfil")   
+    @NotBlank
+    @Max(30)                              
+    private String nombrePerfil;
     
 }
