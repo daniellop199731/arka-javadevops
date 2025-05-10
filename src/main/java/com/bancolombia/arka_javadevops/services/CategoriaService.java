@@ -28,6 +28,7 @@ public class CategoriaService {
         if(!categorias.isEmpty()){
             rObj.setMsj("Consulta ejecutada con exito");
             rObj.setObj(categorias);
+            rObj.setAsSuccessfully();
         } else {
             rObj.setMsj("No hay categorías de productos creadas");            
             rObj.setAsSuccessfully();

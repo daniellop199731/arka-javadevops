@@ -5,65 +5,39 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "proveedores")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Proveedor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idProveedor;
 
+    @NotBlank(message = "Debe proporcionar una identificacion de proveedor")
+    @NotNull(message = "Debe proporcionar una identificacion de proveedor")
     private String identificacionProveedor;
 
+    @NotBlank(message = "Debe proporcionar un nombre de proveedor")
+    @NotNull(message = "Debe proporcionar un nombre de proveedor")    
     private String nombreProveedor;
 
+    @NotBlank(message = "Debe proporcionar un telefono de proveedor")
+    @NotNull(message = "Debe proporcionar un telefono de proveedor")    
     private String telefonoProveedor;
 
+    @Email(message = "Debe proporcionar una direccion de correo valida")
+    @NotBlank(message = "Debe proporcionar un correo electronico de proveedor")
+    @NotNull(message = "Debe proporcionar un correo electronico de proveedor")    
     private String correoElectronicoProveedor;
-
-    public Proveedor() {
-    }
-
-    public int getIdProveedor() {
-        return idProveedor;
-    }
-
-    public void setIdProveedor(int idProveedor) {
-        this.idProveedor = idProveedor;
-    }
-
-    public String getIdentificacionProveedor() {
-        return identificacionProveedor;
-    }
-
-    public void setIdentificacionProveedor(String identificacionProveedor) {
-        this.identificacionProveedor = identificacionProveedor;
-    }
-
-    public String getNombreProveedor() {
-        return nombreProveedor;
-    }
-
-    public void setNombreProveedor(String nombreProveedor) {
-        this.nombreProveedor = nombreProveedor;
-    }
-
-    public String getTelefonoProveedor() {
-        return telefonoProveedor;
-    }
-
-    public void setTelefonoProveedor(String telefonoProveedor) {
-        this.telefonoProveedor = telefonoProveedor;
-    }
-
-    public String getCorreoElectronicoProveedor() {
-        return correoElectronicoProveedor;
-    }
-
-    public void setCorreoElectronicoProveedor(String correoElectronicoProveedor) {
-        this.correoElectronicoProveedor = correoElectronicoProveedor;
-    }
-
     
 }

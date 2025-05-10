@@ -10,7 +10,6 @@ import com.bancolombia.arka_javadevops.utils.ResponseObject;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,92 +28,59 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
+    private static ResponseObject rObj;
+
     @GetMapping("")
     public ResponseEntity<ResponseObject> obtenerUsuarios() {        
-        try{
-            return new ResponseEntity<>(usuarioService.obtenerUsuarios(), HttpStatus.OK);
-        } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(usuarioService.obtenerUsuarios(), HttpStatus.OK);
     }
 
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<ResponseObject> obtenerUsuarioPorId(@PathVariable(value = "idUsuario") int idUsuario){
-        try{
-            return new ResponseEntity<>(usuarioService.obtenerUsuarioPorId(idUsuario), HttpStatus.OK);
-        } catch(Exception ex) {
-            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }        
+    public ResponseEntity<ResponseObject> obtenerUsuarioPorId(@PathVariable int idUsuario){
+        return new ResponseEntity<>(usuarioService.obtenerUsuarioPorId(idUsuario), HttpStatus.OK);    
     }
 
     //Define una ruta qye permita buscar y devolver una lista de usuarios filtrados por su nombre
     @GetMapping("/busquedaPorNombre")
     public ResponseEntity<ResponseObject> obtenerUsuariosPorNombre(@RequestParam(value = "nombresUsuario", required = true) String nombreUsuario) {
-        try{
-            return new ResponseEntity<>(usuarioService.obtenerUsuariosPorNombres(nombreUsuario), HttpStatus.OK);
-        } catch(Exception ex){            
-            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }        
+        return new ResponseEntity<>(usuarioService.obtenerUsuariosPorNombres(nombreUsuario), HttpStatus.OK);      
     }
 
     //Define una ruta que te devuelva la lista de todos los usuarios ordenados alfabéticamente
     @GetMapping("/obtenerUsuariosPorOrdenNombres")
     public ResponseEntity<ResponseObject> obtenerUsuariosPorOrdenNombres(){
-        try{
-            return new ResponseEntity<>(usuarioService.obtenerUsuariosPorOrdenNombres(), HttpStatus.OK);
-        } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(usuarioService.obtenerUsuariosPorOrdenNombres(), HttpStatus.OK);
     }
 
     @GetMapping("/busquedaPorIdentificacion")
-    public ResponseEntity<ResponseObject> obtenerUsuarioPorIdentificacion(@RequestParam(value = "identificacionUsuario", required = true) String identificacionUsuario) {
-        try{
-            return new ResponseEntity<>(
-                usuarioService.obtenerUsuarioPorIdentificacion(identificacionUsuario), HttpStatus.OK);      
-        }catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }        
+    public ResponseEntity<ResponseObject> obtenerUsuarioPorIdentificacion(@RequestParam(required = true) String identificacionUsuario) {
+        return new ResponseEntity<>(
+            usuarioService.obtenerUsuarioPorIdentificacion(identificacionUsuario), HttpStatus.OK);
     }        
 
     @PostMapping("/crearNuevo")
     public ResponseEntity<ResponseObject> crearNuevoUsuario(@Valid @RequestBody Usuario usuario) {
-        try{
-            return new ResponseEntity<>(usuarioService.crearNuevoUsuario(usuario), HttpStatus.CREATED);
-        } catch(DataIntegrityViolationException ex) {        
-            return new ResponseEntity<>(new ResponseObject(false, "Error en los campos enviados", ex)
-                , HttpStatus.BAD_REQUEST);
-        } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error : ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(usuarioService.crearNuevoUsuario(usuario), HttpStatus.CREATED);
     }
 
     @PutMapping("/actualizarUsuario")
-    public ResponseEntity<ResponseObject> putMethodName(@RequestBody Usuario usuario) {        
-        try{            
+    public ResponseEntity<ResponseObject> putMethodName(@Valid @RequestBody Usuario usuario) {    
+        rObj = usuarioService.obtenerUsuarioPorId(usuario.getIdUsuario());
+        if(rObj.getObj() != null){
             return new ResponseEntity<>(usuarioService.actualizarUsuario(usuario), HttpStatus.OK);
-        } catch(DataIntegrityViolationException ex){            
-            return new ResponseEntity<>(new ResponseObject(false, "Error en los campos enviados", ex)
-                , HttpStatus.BAD_REQUEST);
-        } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error : ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(rObj, HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/eliminar/{idUsuario}")
-    public ResponseEntity<ResponseObject> eliminarUsuarioPorId(@PathVariable(value = "idUsuario", required = true) int idUsuario){
-        try{
+    public ResponseEntity<ResponseObject> eliminarUsuarioPorId(@PathVariable(required = true) int idUsuario){
+        rObj = usuarioService.obtenerUsuarioPorId(idUsuario);
+        if(rObj.getObj() != null){
             return new ResponseEntity<>(usuarioService.eliminarUsuarioPorId(idUsuario), HttpStatus.OK);
-        } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }        
+        } else {
+            return new ResponseEntity<>(rObj, HttpStatus.NOT_FOUND);
+        }
+             
     }   
 }

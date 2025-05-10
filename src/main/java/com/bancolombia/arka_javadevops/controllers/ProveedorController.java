@@ -1,7 +1,6 @@
 package com.bancolombia.arka_javadevops.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,48 +30,22 @@ public class ProveedorController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> obtenerProveedores() {
-        try{
-            return new ResponseEntity<>(proveedorService.obtenerProveedores(), HttpStatus.OK);
-        } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<ResponseObject> obtenerProveedores() {        
+        return new ResponseEntity<>(proveedorService.obtenerProveedores(), HttpStatus.OK);
     }
 
     @GetMapping("/{identificacionProveedor}")
     public ResponseEntity<ResponseObject> obtenerProveedorPorIdentificacion(@PathVariable String identificacionProveedor) {
-        try{
-            return new ResponseEntity<>(proveedorService.obtenerProveedorPorIdentificacion(identificacionProveedor), HttpStatus.OK);
-        } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }        
+        return new ResponseEntity<>(proveedorService.obtenerProveedorPorIdentificacion(identificacionProveedor), HttpStatus.OK);       
     }
 
     @PostMapping("/crearNuevo")
     public ResponseEntity<ResponseObject> crearNuevo(@RequestBody Proveedor proveedor) {
-        try{
-            return new ResponseEntity<>(proveedorService.crearNuevo(proveedor), HttpStatus.OK);
-        } catch(DataIntegrityViolationException ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error en los campos enviados", ex)
-                , HttpStatus.BAD_REQUEST);
-        } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(proveedorService.crearNuevo(proveedor), HttpStatus.CREATED);
     }
     
     @PutMapping("/actualizar")
     public ResponseEntity<ResponseObject> actualizar(@RequestBody Proveedor proveedor) {
-        try{
-            return new ResponseEntity<>(proveedorService.actualizar(proveedor), HttpStatus.OK);
-        } catch(DataIntegrityViolationException ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error en los campos enviados", ex)
-                , HttpStatus.BAD_REQUEST);
-        } catch(Exception ex){
-            return new ResponseEntity<>(new ResponseObject(false, "Error: ".concat(ex.getMessage()), ex)
-                , HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(proveedorService.actualizar(proveedor), HttpStatus.OK);
     }
 }

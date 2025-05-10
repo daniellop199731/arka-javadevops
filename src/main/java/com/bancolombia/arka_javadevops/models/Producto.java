@@ -6,9 +6,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "productos")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Producto {
 
     @Id
@@ -18,106 +27,29 @@ public class Producto {
     @Column(nullable = true)
     private String referenciaProducto;
 
+    @NotBlank(message = "Debe proporcionar un nombre al producto")
     private String nombreProducto;
 
+    @NotBlank(message = "Debe proporcionar una descripcion")
     private String descripcionProducto;
 
+    @Positive(message = "Debe proporcionar un precio al producto")
     private double precioProducto;
 
+    @NotNull(message = "Debe proporcionar un stock. Este puede ser cero")
     private int stockProducto;
 
+    @NotNull(message = "Debe proporcionar un stock minimo. Este puede ser cero")
     private int stockMinimoProducto;
 
+    @NotNull(message = "Debe proporcionar un Id de proveedor")
     private int idProveedorProducto;
 
+    @NotNull(message = "Debe ingresas una cantidad de unidades a solicitar. Este puede ser cero")
     private int unidadesSolicitarProducto;
 
+    @NotNull(message = "Debe proporcionar un Id de categoria")
     private int idCategoriaProducto;
-
-    public Producto() {
-    }
-
-    public int getIdProducto() {
-        return idProducto;
-    }
-
-    public void setIdProducto(int idProducto) {
-        this.idProducto = idProducto;
-    }
-
-    public String getReferenciaProducto() {
-        return referenciaProducto;
-    }
-
-    public void setReferenciaProducto(String referenciaProducto) {
-        this.referenciaProducto = referenciaProducto;
-    }
-
-    public String getNombreProducto() {
-        return nombreProducto;
-    }
-
-    public void setNombreProducto(String nombreProducto) {
-        this.nombreProducto = nombreProducto;
-    }
-
-    public String getDescripcionProducto() {
-        return descripcionProducto;
-    }
-
-    public void setDescripcionProducto(String descripcionProducto) {
-        this.descripcionProducto = descripcionProducto;
-    }
-
-    public double getPrecioProducto() {
-        return precioProducto;
-    }
-
-    public void setPrecioProducto(double precioProducto) {
-        this.precioProducto = precioProducto;
-    }
-
-    public int getStockProducto() {
-        return stockProducto;
-    }
-
-    public void setStockProducto(int stockProducto) {
-        this.stockProducto = stockProducto;
-    }
-
-    public int getStockMinimoProducto() {
-        return stockMinimoProducto;
-    }
-
-    public void setStockMinimoProducto(int stockMinimoProducto) {
-        this.stockMinimoProducto = stockMinimoProducto;
-    }
-
-    public int getIdProveedorProducto() {
-        return idProveedorProducto;
-    }
-
-    public void setIdProveedorProducto(int idProveedorProducto) {
-        this.idProveedorProducto = idProveedorProducto;
-    }
-
-    public int getUnidadesSolicitarProducto() {
-        return unidadesSolicitarProducto;
-    }
-
-    public void setUnidadesSolicitarProducto(int unidadesSolicitarProducto) {
-        this.unidadesSolicitarProducto = unidadesSolicitarProducto;
-    }
-
-    public int getIdCategoriaProducto() {
-        return idCategoriaProducto;
-    }
-
-    public void setIdCategoriaProducto(int idCategoriaProducto) {
-        this.idCategoriaProducto = idCategoriaProducto;
-    }
-
-    
 
 
 }
