@@ -10,6 +10,8 @@ import com.bancolombia.arka_javadevops.models.Proveedor;
 import com.bancolombia.arka_javadevops.services.ProveedorService;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,12 +42,12 @@ public class ProveedorController {
     }
 
     @PostMapping("/crearNuevo")
-    public ResponseEntity<ResponseObject> crearNuevo(@RequestBody Proveedor proveedor) {
+    public ResponseEntity<ResponseObject> crearNuevo(@Valid @RequestBody Proveedor proveedor) {
         return new ResponseEntity<>(proveedorService.crearNuevo(proveedor), HttpStatus.CREATED);
     }
     
     @PutMapping("/actualizar")
-    public ResponseEntity<ResponseObject> actualizar(@RequestBody Proveedor proveedor) {
+    public ResponseEntity<ResponseObject> actualizar(@Valid @RequestBody Proveedor proveedor) {
         return new ResponseEntity<>(proveedorService.actualizar(proveedor), HttpStatus.OK);
     }
 }

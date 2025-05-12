@@ -82,30 +82,27 @@ public class UsuarioService {
         return rObj; 
     }
 
-    public ResponseObject actualizarUsuario(Usuario usuario){
+    public ResponseObject actualizarUsuario(int idUsuario,Usuario usuario){
         rObj = new ResponseObject();
-        boolean continueToSave = true;
+        Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(idUsuario);
+        if(usuarioEncontrado.isPresent()){            
+            /**
+             * POSIBLE LOGICA ANTES DE ACTUALIZAR EN BASE DE DATOS, AQUI
+            */
+            usuario.setIdUsuario(idUsuario);    
+            if(this.existeUsuarioPorIdentificacionParaActualizar(usuario)){
+                rObj.setMsj("Ya existe un usuario con la identificacion ".concat(usuario.getIdentificacionUsuario()));
+                rObj.setObj("");
+                return rObj;           
+            }                    
+            /**/            
+            rObj.setObj(usuarioRepository.save(usuario));
+            rObj.setMsj("Usuario actualizado con exito");
+            rObj.setAsSuccessfully(); 
+            return rObj;               
+        } 
         
-        if(this.existeUsuarioPorIdentificacionParaActualizar(usuario)){
-            rObj.setMsj("Ya existe un usuario con la identificacion ".concat(usuario.getIdentificacionUsuario()));
-            continueToSave = false;            
-        }
-
-        if(continueToSave){
-            Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(usuario.getIdUsuario());
-            if(usuarioEncontrado.isPresent()){
-                /**
-                 * POSIBLE LOGICA ANTES DE ACTUALIZAR EN BASE DE DATOS, AQUI
-                 * ...
-                 */            
-                rObj.setObj(usuarioRepository.save(usuario));
-                rObj.setMsj("Usuario actualizado con exito");
-                rObj.setAsSuccessfully();                
-            } else {
-                rObj.setMsj("El usuario a actualizar no existe");
-            }
-            usuarioEncontrado = null;
-        }
+        rObj.setMsj("El usuario con el ID ".concat(idUsuario+"").concat(" no existe"));
         return rObj;
     }    
 
@@ -118,13 +115,14 @@ public class UsuarioService {
              * ...
              */            
             usuarioRepository.deleteById(idUsuario);
-            rObj.setObj(usuarioRepository.findById(idUsuario));
+            rObj.setObj(usuarioEncontrado.get());
             rObj.setMsj("Usuario eliminado con exito");
             rObj.setAsSuccessfully();
-        } else {
-            rObj.setMsj("El usuario que se quiere eliminar no existe");
+            return rObj;
         }
+        rObj.setMsj("El usuario con el ID ".concat(idUsuario+"").concat(" no existe"));
         return rObj;
+        
     }
 
     public ResponseObject obtenerUsuariosPorNombres(String nombresuString){

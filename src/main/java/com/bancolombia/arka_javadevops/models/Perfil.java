@@ -1,13 +1,19 @@
 package com.bancolombia.arka_javadevops.models;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,8 +33,13 @@ public class Perfil {
     //Si el atributo se llama igual a la columna de la tabla la anotacion @Column 
     //no es necesaria
     @Column(name = "nombrePerfil")   
-    @NotBlank
+    @NotBlank(message = "Debe proporcionar un nombre para el perfil")
+    @NotNull(message = "Debe proporcionar un nombre para el perfil")
     @Max(30)                              
     private String nombrePerfil;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "perfil")
+    private List<Usuario> usuarios;
     
 }

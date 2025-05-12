@@ -1,9 +1,14 @@
 package com.bancolombia.arka_javadevops.models;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -39,5 +44,9 @@ public class Proveedor {
     @NotBlank(message = "Debe proporcionar un correo electronico de proveedor")
     @NotNull(message = "Debe proporcionar un correo electronico de proveedor")    
     private String correoElectronicoProveedor;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "proveedor")
+    private List<Producto> productos;
     
 }

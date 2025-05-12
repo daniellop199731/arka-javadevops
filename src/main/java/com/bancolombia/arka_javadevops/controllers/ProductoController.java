@@ -13,6 +13,7 @@ import com.bancolombia.arka_javadevops.models.Producto;
 import com.bancolombia.arka_javadevops.services.ProductoService;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,18 +59,17 @@ public class ProductoController {
     }    
 
     @PostMapping("/crearNuevo")
-    public ResponseEntity<ResponseObject> crearNuevo(@RequestBody Producto producto) {
-        return new ResponseEntity<>(productoService.crearNuevo(producto), HttpStatus.OK);
+    public ResponseEntity<ResponseObject> crearNuevo(@Valid @RequestBody Producto producto) {
+        return new ResponseEntity<>(productoService.crearNuevo(producto), HttpStatus.CREATED);
     }
 
-    @PutMapping("/actualizar")
-    public ResponseEntity<ResponseObject> actualizar(@RequestBody Producto producto) {
-        rObj = productoService.obtenerProductoPorId(producto.getIdProducto());
-        if(rObj.getObj() != null){
-            return new ResponseEntity<>(productoService.actualizar(producto), HttpStatus.OK);
-        } else {
+    @PutMapping("/actualizar/{idProducto}")
+    public ResponseEntity<ResponseObject> actualizar(@PathVariable int idProducto, @Valid @RequestBody Producto producto) {
+        rObj = productoService.actualizar(idProducto, producto);
+        if(rObj.getObj() == null){
             return new ResponseEntity<>(rObj, HttpStatus.NOT_FOUND);
-        }
+        } 
+        return new ResponseEntity<>(rObj, HttpStatus.OK);
             
     }
 

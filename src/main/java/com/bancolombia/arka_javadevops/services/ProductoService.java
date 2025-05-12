@@ -104,26 +104,24 @@ public class ProductoService {
         return rObj;
     }
 
-    public ResponseObject actualizar(Producto producto){
+    public ResponseObject actualizar(int idProducto, Producto producto){
         rObj = new ResponseObject();
-        boolean continueToSave = true;
-        if(this.existeProductoPorReferenciaParaActualizar(producto)){
-            rObj.setMsj("Ya existe un producto con la referencia ".concat(producto.getReferenciaProducto()));
-            continueToSave = false;
-        }
+        Optional<Producto> productoEncontrado = productoRepository.findById(idProducto);
+        if(productoEncontrado.isPresent()){
+            producto.setIdProducto(idProducto);
+            if(this.existeProductoPorReferenciaParaActualizar(producto)){
+                rObj.setMsj("Ya existe un producto con la referencia ".concat(producto.getReferenciaProducto()));
+                rObj.setObj("");
+                return rObj;
+            }                
 
-        if(continueToSave){
-            Optional<Producto> productoEncontrado = productoRepository.findById(producto.getIdProducto());
-            if(productoEncontrado.isPresent()){
-                rObj.setObj(productoRepository.save(producto));
-                rObj.setMsj("Producto actualizado con exito");
-                rObj.setAsSuccessfully();                              
-            } else {
-                rObj.setMsj("El producto a actualizar no existe");
-            }
-            productoEncontrado = null;
-        }        
+            rObj.setObj(productoRepository.save(producto));
+            rObj.setMsj("Producto actualizado con exito");
+            rObj.setAsSuccessfully(); 
+            return rObj;                             
+        }      
 
+        rObj.setMsj("El producto a actualizar no existe");
         return rObj;
     }
 

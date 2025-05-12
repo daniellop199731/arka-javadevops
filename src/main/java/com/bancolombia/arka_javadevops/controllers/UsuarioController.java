@@ -63,24 +63,25 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioService.crearNuevoUsuario(usuario), HttpStatus.CREATED);
     }
 
-    @PutMapping("/actualizarUsuario")
-    public ResponseEntity<ResponseObject> putMethodName(@Valid @RequestBody Usuario usuario) {    
-        rObj = usuarioService.obtenerUsuarioPorId(usuario.getIdUsuario());
-        if(rObj.getObj() != null){
-            return new ResponseEntity<>(usuarioService.actualizarUsuario(usuario), HttpStatus.OK);
-        } else {
+    @PutMapping("/actualizarUsuario/{idUsuario}")
+    public ResponseEntity<ResponseObject> putMethodName(@PathVariable int idUsuario, @Valid @RequestBody Usuario usuario) {    
+        rObj = usuarioService.actualizarUsuario(idUsuario, usuario);
+        if(rObj.getObj() == null){
             return new ResponseEntity<>(rObj, HttpStatus.NOT_FOUND);
+        } 
+        if(!rObj.getSuccessfully()){
+            return new ResponseEntity<>(rObj, HttpStatus.CONFLICT);
         }
+        return new ResponseEntity<>(rObj, HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{idUsuario}")
     public ResponseEntity<ResponseObject> eliminarUsuarioPorId(@PathVariable(required = true) int idUsuario){
-        rObj = usuarioService.obtenerUsuarioPorId(idUsuario);
-        if(rObj.getObj() != null){
-            return new ResponseEntity<>(usuarioService.eliminarUsuarioPorId(idUsuario), HttpStatus.OK);
-        } else {
+        rObj = usuarioService.eliminarUsuarioPorId(idUsuario);
+        if(rObj.getObj() == null){
             return new ResponseEntity<>(rObj, HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(rObj, HttpStatus.OK);
              
     }   
 }

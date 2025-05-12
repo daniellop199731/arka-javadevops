@@ -43,7 +43,7 @@ public class UsuarioSencilloController {
     public ResponseEntity<ResponseObject> actualizar(@Valid @RequestBody Usuario usuario) {
         rObj = usuarioService.obtenerUsuarioPorId(usuario.getIdUsuario());
         if(rObj.getObj() != null){
-            return new ResponseEntity<>(usuarioService.actualizarUsuario(usuario), HttpStatus.OK);
+            return new ResponseEntity<>(rObj, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(rObj, HttpStatus.NOT_FOUND);
         }
