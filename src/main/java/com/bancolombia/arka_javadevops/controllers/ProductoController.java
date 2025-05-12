@@ -63,6 +63,13 @@ public class ProductoController {
         return new ResponseEntity<>(productoService.crearNuevo(producto), HttpStatus.CREATED);
     }
 
+    ////// Ejemplo con DTO y Mapper
+    @PostMapping("")
+    public ResponseEntity<ResponseObject> crearNuevoDto(@Valid @RequestBody Producto producto) {
+        return new ResponseEntity<>(productoService.crearNuevoDto(producto), HttpStatus.CREATED);
+    }
+    
+
     @PutMapping("/actualizar/{idProducto}")
     public ResponseEntity<ResponseObject> actualizar(@PathVariable int idProducto, @Valid @RequestBody Producto producto) {
         rObj = productoService.actualizar(idProducto, producto);

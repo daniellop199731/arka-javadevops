@@ -56,7 +56,7 @@ public class UsuarioService {
             rObj.setMsj("Usuario encontrado");
             rObj.setAsSuccessfully();
         } else {
-            rObj.setMsj("Usuario no encontrado");
+            rObj.setMsj("El usuario con id ".concat(idUsuario+"").concat(" no existe"));
         }
         return rObj;
     }

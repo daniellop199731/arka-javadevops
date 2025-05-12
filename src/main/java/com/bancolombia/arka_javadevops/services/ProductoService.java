@@ -6,21 +6,22 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bancolombia.arka_javadevops.mappers.ProductoMapper;
 import com.bancolombia.arka_javadevops.models.Producto;
 import com.bancolombia.arka_javadevops.repositories.ProductoRepository;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ProductoService {
 
-    @Autowired
-    private ProductoRepository productoRepository;
+    private final ProductoRepository productoRepository;
+
+    private final ProductoMapper productoMapper;
 
     private static ResponseObject rObj;
-
-    public ProductoService(ProductoRepository productoRepository) {
-        this.productoRepository = productoRepository;
-    }
 
     public ResponseObject obtenerProductos(){
         rObj = new ResponseObject();
@@ -89,17 +90,31 @@ public class ProductoService {
 
     public ResponseObject crearNuevo(Producto producto){
         rObj = new ResponseObject();
-        boolean continueToSave = true;
         if(this.existeProductoPorReferencia(producto.getReferenciaProducto())){
             rObj.setMsj("Ya existe un producto con la referencia ".concat(producto.getReferenciaProducto()));
-            continueToSave = false;
+            rObj.setObj("");
+            return rObj;
         }
 
-        if(continueToSave){
-            rObj.setObj(productoRepository.save(producto));
-            rObj.setMsj("Producto guardado con exito");
-            rObj.setAsSuccessfully();
+        rObj.setObj(productoRepository.save(producto));
+        rObj.setMsj("Producto guardado con exito");
+        rObj.setAsSuccessfully();
+
+        return rObj;
+    }
+
+    public ResponseObject crearNuevoDto(Producto producto){
+        rObj = new ResponseObject();
+        if(this.existeProductoPorReferencia(producto.getReferenciaProducto())){
+            rObj.setMsj("Ya existe un producto con la referencia ".concat(producto.getReferenciaProducto()));
+            rObj.setObj("");
+            return rObj;
         }
+
+        productoRepository.save(producto);
+        rObj.setObj(productoMapper.toDto(producto));
+        rObj.setMsj("Producto guardado con exito");
+        rObj.setAsSuccessfully();
 
         return rObj;
     }
