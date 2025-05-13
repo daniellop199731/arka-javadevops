@@ -3,17 +3,14 @@ package com.bancolombia.arka_javadevops.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bancolombia.arka_javadevops.models.MetodoPagoUsuario;
 import com.bancolombia.arka_javadevops.services.MetodoPagoUsuarioService;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
