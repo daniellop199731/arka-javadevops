@@ -17,11 +17,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "metodosPagoUsuario")
+@Table(name = "carritosCompraProductos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MetodoPagoUsuario {
+public class CarritoCompraProducto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,17 +29,17 @@ public class MetodoPagoUsuario {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "idUsuarioMetodoPago")
-    private Usuario usuarioMetodoPago;
+    @JoinColumn(name = "idCarritoCompra")
+    private CarritoCompra carritoCompra;
 
-    @NotNull(message = "Debe proporcionar un id de metodo de pago valido")
+    @NotNull(message = "Debe proporcionar un id de producto valido")
     @ManyToOne
-    @JoinColumn(name = "idMetodoPago")
+    @JoinColumn(name = "idProducto")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private MetodoPago metodoPago;
+    private Producto productoCarritoCompra;
 
-    @NotNull(message = "Debe de proporcionar un valor de cuenta")
-    @Positive(message = "El valor de la cuenta debe ser mayor a cero")
-    private double valorCuentaMetodoPago;
+    @NotNull(message = "Debe proporcionar las unidades del producto")
+    @Positive(message = "Las unidades del producto deben ser mayores a cero")
+    private int unidadesProducto;
 
 }

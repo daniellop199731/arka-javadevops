@@ -30,7 +30,7 @@ public class ProductoController {
 
     private static ResponseObject rObj;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ResponseObject> obtenerProductos(){
         return new ResponseEntity<>(productoService.obtenerProductos(), HttpStatus.OK);
     }

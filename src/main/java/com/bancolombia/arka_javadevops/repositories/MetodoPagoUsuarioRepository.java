@@ -11,6 +11,6 @@ import com.bancolombia.arka_javadevops.models.Usuario;
 @Repository
 public interface MetodoPagoUsuarioRepository extends CrudRepository<MetodoPagoUsuario, Integer> {
 
-    List<MetodoPagoUsuario> findByUsuario(Usuario usuario);
+    List<MetodoPagoUsuario> findByUsuarioMetodoPago(Usuario usuario);
 
 }

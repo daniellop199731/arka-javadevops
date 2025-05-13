@@ -10,33 +10,29 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "metodosPago")
+@Table(name = "estadosDespachos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MetodoPago {
+public class EstadoDespacho {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idMetodoPago;
+    private int idEstadoDespacho;
 
-    @NotNull(message = "Debe proporcionar el nombre del metodo de pago")
-    @NotBlank(message = "Debe proporcionar el nombre del metodo de pago")
-    private String nombreMetodoPago;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "metodoPago")
-    private List<MetodoPagoUsuario> metodosPagoUsuario;
+    @NotNull(message = "Debe proporcionar un nombre para el estado despacho")
+    private String nombreEstadoDespacho;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "metodoPagoCarritoCompra")
-    private List<CarritoCompra> carritosCompras;
+    @OneToMany(mappedBy = "estadoDespacho")
+    private List<CarritoCompra> carritoCompras;
+
+
 
 }

@@ -26,7 +26,7 @@ public class MetodoPagoUsuarioService {
         rObj = new ResponseObject();
         Usuario usuario = new Usuario();
         usuario.setIdUsuario(idUsuario);
-        List<MetodoPagoUsuario> metodosPagoUsuario = metodoPagoUsuarioRepository.findByUsuario(usuario);
+        List<MetodoPagoUsuario> metodosPagoUsuario = metodoPagoUsuarioRepository.findByUsuarioMetodoPago(usuario);
         rObj.setAsSuccessfully();
         rObj.setObj(metodosPagoUsuario);
         if(metodosPagoUsuario.isEmpty()){
@@ -59,7 +59,7 @@ public class MetodoPagoUsuarioService {
 
         usuario.setIdUsuario(idUsuario);
         metodoPago.setIdMetodoPago(idMetodoPago);
-        metodoPagoUsuario.setUsuario(usuario);
+        metodoPagoUsuario.setUsuarioMetodoPago(usuario);
         metodoPagoUsuario.setMetodoPago(metodoPago);
         metodoPagoUsuario.setValorCuentaMetodoPago(valorCuenta);
 

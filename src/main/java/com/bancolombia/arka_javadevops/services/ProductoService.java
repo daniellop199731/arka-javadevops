@@ -41,7 +41,7 @@ public class ProductoService {
         if(producto.isPresent()){
             rObj.setMsj("Producto encontrado");
             rObj.setAsSuccessfully();
-            rObj.setObj(producto);
+            rObj.setObj(producto.get());
         } else {
             rObj.setMsj("No se encontró el producto");
         }

@@ -73,8 +73,13 @@ public class Usuario {
     private Perfil perfil;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuarioMetodoPago")
     private List<MetodoPagoUsuario> metodsPagoUsuario;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "usuarioCarritoCompra")
+    private List<CarritoCompra> carritosCompra;
+
 
     
 }

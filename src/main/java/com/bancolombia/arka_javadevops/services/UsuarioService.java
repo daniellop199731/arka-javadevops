@@ -52,7 +52,7 @@ public class UsuarioService {
         rObj = new ResponseObject();
         Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
         if(usuario.isPresent()){
-            rObj.setObj(usuario);
+            rObj.setObj(usuario.get());
             rObj.setMsj("Usuario encontrado");
             rObj.setAsSuccessfully();
         } else {
