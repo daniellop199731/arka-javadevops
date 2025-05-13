@@ -129,9 +129,9 @@ public class ProductoService {
                 return rObj;
             }                
 
-            rObj.setObj(productoRepository.save(producto));
-            rObj.setMsj("Producto actualizado con exito");
             rObj.setAsSuccessfully(); 
+            rObj.setMsj("Producto actualizado con exito");
+            rObj.setObj(productoRepository.save(producto));
             return rObj;                             
         }      
 
@@ -153,6 +153,20 @@ public class ProductoService {
             rObj.setObj(producto);            
         } else {
             rObj.setMsj("No se encontró el producto para ser eliminado");
+        }
+
+        return rObj;
+    }
+
+    public ResponseObject descontarUnidadesStock(int idProducto, Producto producto, int unidades){
+        rObj = new ResponseObject();
+        producto.setStockProducto(producto.getStockProducto()-unidades);
+        rObj = actualizar(idProducto, producto);
+        if(rObj.getSuccessfully()){
+            producto = (Producto) rObj.getObj();
+            if(producto.getStockProducto() <= producto.getStockMinimoProducto()){
+                System.out.println("Crea notificacion de abastecimineto");
+            }
         }
 
         return rObj;

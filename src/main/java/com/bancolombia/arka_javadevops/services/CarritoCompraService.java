@@ -56,7 +56,7 @@ public class CarritoCompraService {
         List<CarritoCompra> carritosCompra = carritoCompraRepository.findCarritoActual(idUsuario);
         if(carritosCompra.size() == 0){
             rObj.setMsj("No hay carrito de compras actual");
-            rObj.setObj(carritosCompra);
+            rObj.setObj("");
             return rObj;
         }
 

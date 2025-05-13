@@ -56,21 +56,35 @@ public class CarritoCompraProductoService {
         }
         Producto producto = (Producto) rObj.getObj();
 
+        if(producto.getStockProducto() < unidades){
+            rObj.setAsNotSuccessfully();
+            rObj.setMsj("No existen suficientes unidades de ".concat(producto.getNombreProducto()));
+            rObj.setObj("");
+            return rObj;
+        }
+
         rObj = carritoCompraService.carritoActual(idUsuario);
         if(!rObj.getSuccessfully()){
             rObj = carritoCompraService.crearNuevo(idUsuario);
         }
 
-        CarritoCompra carritoCompra = (CarritoCompra) rObj.getObj();
-        CarritoCompraProducto carritoCompraProducto = new CarritoCompraProducto();
+        if(rObj.getSuccessfully()){
+            CarritoCompra carritoCompra = (CarritoCompra) rObj.getObj();
+            CarritoCompraProducto carritoCompraProducto = new CarritoCompraProducto();
 
-        carritoCompraProducto.setCarritoCompra(carritoCompra);
-        carritoCompraProducto.setProductoCarritoCompra(producto);
-        carritoCompraProducto.setUnidadesProducto(unidades);
+            carritoCompraProducto.setCarritoCompra(carritoCompra);
+            carritoCompraProducto.setProductoCarritoCompra(producto);
+            carritoCompraProducto.setUnidadesProducto(unidades);
+            rObj = productoService.descontarUnidadesStock(idProducto, producto, unidades);
 
-        rObj.setAsSuccessfully();
-        rObj.setMsj("Producto agregado al carrito");
-        rObj.setObj(carritoCompraProductoRepository.save(carritoCompraProducto));
+            if(rObj.getSuccessfully()){
+                rObj.setAsSuccessfully();
+                rObj.setMsj("Producto agregado al carrito de compras con éxito");
+                rObj.setObj(carritoCompraProductoRepository.save(carritoCompraProducto));
+            }
+            return rObj;
+
+        }  
         return rObj;
     }
 
