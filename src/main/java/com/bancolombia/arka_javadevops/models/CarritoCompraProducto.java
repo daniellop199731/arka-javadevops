@@ -1,6 +1,4 @@
 package com.bancolombia.arka_javadevops.models;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
@@ -27,12 +25,12 @@ public class CarritoCompraProducto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @JsonIgnore
+    
     @ManyToOne
     @JoinColumn(name = "idCarritoCompra")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CarritoCompra carritoCompra;
 
-    @NotNull(message = "Debe proporcionar un id de producto valido")
     @ManyToOne
     @JoinColumn(name = "idProducto")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})

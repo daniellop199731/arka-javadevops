@@ -39,6 +39,23 @@ public class CarritoCompraProductoService {
         return rObj;
     }
 
+    public ResponseObject carritosPorProducto(int idProducto){
+        rObj = productoService.obtenerProductoPorId(idProducto);
+        if(rObj.getSuccessfully()){
+            List<CarritoCompraProducto> carritoCompraProductos = carritoCompraProductoRepository.findByProductoCarritoCompra((Producto) rObj.getObj());
+            if(carritoCompraProductos.isEmpty()){
+                rObj.setAsSuccessfully();
+                rObj.setMsj("No se encontraron carritos con el producto ");
+                rObj.setObj(carritoCompraProductos);
+            }
+            rObj.setAsSuccessfully();
+            rObj.setMsj("Carritos encontrados");
+            rObj.setObj(carritoCompraProductos);
+        }
+        
+        return rObj;
+    }
+
     public ResponseObject agregarProductoCarrito(int idUsuario, int idProducto, int unidades){
         rObj = usuarioService.obtenerUsuarioPorId(idUsuario);
         if(!rObj.getSuccessfully()){

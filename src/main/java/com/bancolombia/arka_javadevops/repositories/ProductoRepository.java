@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import com.bancolombia.arka_javadevops.models.Categoria;
 import com.bancolombia.arka_javadevops.models.Producto;
 
 
@@ -22,6 +23,9 @@ public interface ProductoRepository extends CrudRepository<Producto, Integer>{
 
     @Query("select p from Producto p where p.precioProducto between ?1 and ?2 order by p.precioProducto asc")
     List<Producto> productosPorRangoPrecio(int precioMinimo, int precioMaximo);
+
+    //Búsqueda de productos por categoría
+    List<Producto> findByCategoria(Categoria categoria);
 
     
 }

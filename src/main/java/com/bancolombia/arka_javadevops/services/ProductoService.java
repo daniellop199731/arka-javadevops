@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.bancolombia.arka_javadevops.mappers.ProductoMapper;
+import com.bancolombia.arka_javadevops.models.Categoria;
 import com.bancolombia.arka_javadevops.models.Producto;
 import com.bancolombia.arka_javadevops.repositories.ProductoRepository;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
@@ -168,8 +169,23 @@ public class ProductoService {
                 System.out.println("Crea notificacion de abastecimineto");
             }
         }
-
         return rObj;
+    }
+
+    public ResponseObject productosPorCategoria(int idCategoria){
+        rObj = new ResponseObject();
+        Categoria categoria = new Categoria();
+        categoria.setIdCategoria(idCategoria);
+        List<Producto> productos = productoRepository.findByCategoria(categoria);
+        rObj.setAsSuccessfully();
+        if(productos.isEmpty()){
+            rObj.setMsj("No hay productos de esa categoria");
+            rObj.setObj(productos);
+        }
+        rObj.setMsj("Consulta ejecutada con exito");
+        rObj.setObj(productos);
+        return rObj;
+
     }
 
     public boolean existeProductoPorReferencia(String referenciaProducto){

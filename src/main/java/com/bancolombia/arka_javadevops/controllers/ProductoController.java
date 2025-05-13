@@ -40,6 +40,8 @@ public class ProductoController {
         return new ResponseEntity<>(productoService.obtenerProductoPorId(idProducto), HttpStatus.OK);
     }
 
+    /// Microservicio Soporte para Productos [Actividad Requerida]
+
     //Crea una ruta para buscar y devolver una lista de productos cuyo nombre o descripción contengan un término específico.
     @GetMapping("/productosNombreDescripcion/{texto}")
     public ResponseEntity<ResponseObject> productosNombreDescripcion(@PathVariable String texto){
@@ -57,6 +59,18 @@ public class ProductoController {
     public ResponseEntity<ResponseObject> productosPorRangoPrecio(@RequestParam int precioMinimo, @RequestParam int precioMaximo){
         return new ResponseEntity<>(productoService.productosPorRangoPrecio(precioMinimo, precioMaximo), HttpStatus.OK);
     }    
+
+    /// Microservicio Soporte para Productos [Actividad Requerida]
+
+    /// Integración de Relaciones en Proyecto Arka [Actividad Requerida]
+
+    //Búsqueda de productos por categoría
+    @GetMapping("/productosPorCategoria/{idCategoria}")
+    public ResponseEntity<ResponseObject> productosPorCategoria(@PathVariable int idCategoria){
+        return new ResponseEntity<>(productoService.productosPorCategoria(idCategoria), HttpStatus.OK);
+    }
+
+    /// Integración de Relaciones en Proyecto Arka [Actividad Requerida]
 
     @PostMapping("/crearNuevo")
     public ResponseEntity<ResponseObject> crearNuevo(@Valid @RequestBody Producto producto) {

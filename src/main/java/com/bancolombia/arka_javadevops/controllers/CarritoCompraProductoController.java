@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
+
 @RestController
 @RequestMapping("/ecommerce/carritoComprasProducto")
 @RequiredArgsConstructor
@@ -25,6 +26,16 @@ public class CarritoCompraProductoController {
     public ResponseEntity<ResponseObject> obtenerProductosCarrito(@PathVariable int idCarrito) {
         return new ResponseEntity<>(carritoCompraProductoService.obtenerProductosCarrito(idCarrito), HttpStatus.OK);
     }
+
+    /// Integración de Relaciones en Proyecto Arka [Actividad Requerida]
+    /// 
+    //Búsqueda de Pedidos por producto
+    @GetMapping("/producto/{idProducto}")
+    public ResponseEntity<ResponseObject> carritosPorProducto(@PathVariable int idProducto) {
+        return new ResponseEntity<>(carritoCompraProductoService.carritosPorProducto(idProducto), HttpStatus.OK);
+    }
+
+    /// Integración de Relaciones en Proyecto Arka [Actividad Requerida]
     
 
     @PostMapping("/agregarProducto/{idUsuario}/{idProducto}/{unidades}")

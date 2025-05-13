@@ -3,9 +3,9 @@ package com.bancolombia.arka_javadevops.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bancolombia.arka_javadevops.mappers.UsuarioMapper;
 import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.repositories.UsuarioRepository;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UsuarioService {
 
-    @Autowired
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioMapper usuarioMapper;
 
     private static ResponseObject rObj;
 
@@ -36,7 +36,7 @@ public class UsuarioService {
         rObj = new ResponseObject();
         rObj.setAsSuccessfully();
         rObj.setMsj("Consulta ejecutada con exito");        
-        rObj.setObj((List<Usuario>) usuarioRepository.findAll());
+        rObj.setObj(usuarioMapper.toDto((List<Usuario>) usuarioRepository.findAll()));
         return rObj;
     }
 
@@ -44,11 +44,24 @@ public class UsuarioService {
         rObj = new ResponseObject();
         rObj.setAsSuccessfully();
         rObj.setMsj("Consulta ejecutada con exito");
-        rObj.setObj(usuarioRepository.usuariosOrderByNombres());
+        rObj.setObj(usuarioMapper.toDto(usuarioRepository.usuariosOrderByNombres()));
         return rObj;
     }
 
     public ResponseObject obtenerUsuarioPorId(int idUsuario){
+        rObj = new ResponseObject();
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+        if(usuario.isPresent()){
+            rObj.setObj(usuarioMapper.toDto(usuario.get()));
+            rObj.setMsj("Usuario encontrado");
+            rObj.setAsSuccessfully();
+        } else {
+            rObj.setMsj("El usuario con id ".concat(idUsuario+"").concat(" no existe"));
+        }
+        return rObj;
+    }
+
+    public ResponseObject obtenerUsuarioPorIdWitOutDto(int idUsuario){
         rObj = new ResponseObject();
         Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
         if(usuario.isPresent()){
@@ -59,7 +72,7 @@ public class UsuarioService {
             rObj.setMsj("El usuario con id ".concat(idUsuario+"").concat(" no existe"));
         }
         return rObj;
-    }
+    }    
 
     public ResponseObject crearNuevoUsuario(Usuario usuario){
         rObj = new ResponseObject();
@@ -74,8 +87,9 @@ public class UsuarioService {
             /**
              * LOGICA ANTES DE GUARDAR EN BASE DE DATOS, AQUI
              * ...
-             */            
-            rObj.setObj(usuarioRepository.save(usuario));
+             */           
+            usuarioRepository.save(usuario);
+            rObj.setObj(usuarioMapper.toDto(usuario));
             rObj.setMsj("Usuario creado con exito");
             rObj.setAsSuccessfully();
         }
@@ -96,7 +110,8 @@ public class UsuarioService {
                 return rObj;           
             }                    
             /**/            
-            rObj.setObj(usuarioRepository.save(usuario));
+            usuarioRepository.save(usuario);
+            rObj.setObj(usuarioMapper.toDto(usuario));
             rObj.setMsj("Usuario actualizado con exito");
             rObj.setAsSuccessfully(); 
             return rObj;               
@@ -115,7 +130,7 @@ public class UsuarioService {
              * ...
              */            
             usuarioRepository.deleteById(idUsuario);
-            rObj.setObj(usuarioEncontrado.get());
+            rObj.setObj(usuarioMapper.toDto(usuarioEncontrado.get()));
             rObj.setMsj("Usuario eliminado con exito");
             rObj.setAsSuccessfully();
             return rObj;
@@ -129,7 +144,7 @@ public class UsuarioService {
         rObj = new ResponseObject();
         List<Usuario> usuarios = usuarioRepository.findByNombresUsuario(nombresuString);
         if(usuarios.size() > 0){
-            rObj.setObj(usuarios);
+            rObj.setObj(usuarioMapper.toDto(usuarios));
             rObj.setMsj("Usuarios encontrados");
             rObj.setAsSuccessfully();
         } else {
@@ -143,7 +158,7 @@ public class UsuarioService {
         rObj = new ResponseObject();
         Usuario usuario = usuarioRepository.findByIdentificacionUsuario(identificacionUsuario);
         if(usuario != null){
-            rObj.setObj(usuario);
+            rObj.setObj(usuarioMapper.toDto(usuario));
             rObj.setMsj("Usuario encontrado");
             rObj.setAsSuccessfully();
         } else {
@@ -159,7 +174,7 @@ public class UsuarioService {
         if(!this.existeUsuarioPorIdentificacion(usuario.getIdentificacionUsuario())){
             rObj.setAsSuccessfully();
             rObj.setMsj("Usuario creado con exito");
-            rObj.setObj(usuarioRepository.save(usuario));
+            rObj.setObj(usuarioMapper.toDto(usuarioRepository.save(usuario)));
         } else {
             rObj.setAsNotSuccessfully();;
             rObj.setMsj("Ya existe un usuario con la identificacion "
