@@ -1,4 +1,4 @@
-package com.bancolombia.arka_javadevops.services;
+package com.bancolombia.arka_javadevops.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -12,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.repositories.UsuarioRepository;
+import com.bancolombia.arka_javadevops.services.UsuarioService;
 
 @ExtendWith(SpringExtension.class)
 public class UsuarioServiceTest {

@@ -61,16 +61,19 @@ public class CarritoCompraProductoService {
         if(!rObj.getSuccessfully()){
             return rObj;
         }
+
         rObj = productoService.obtenerProductoPorId(idProducto);
         if(!rObj.getSuccessfully()){
             return rObj;
         }
+
         if(unidades <= 0){
             rObj.setAsNotSuccessfully();
             rObj.setMsj("Las unidades deben ser mayores a cero");
             rObj.setObj("");
             return rObj;
         }
+
         Producto producto = (Producto) rObj.getObj();
 
         if(producto.getStockProducto() < unidades){
@@ -92,8 +95,8 @@ public class CarritoCompraProductoService {
             carritoCompraProducto.setCarritoCompra(carritoCompra);
             carritoCompraProducto.setProductoCarritoCompra(producto);
             carritoCompraProducto.setUnidadesProducto(unidades);
+            
             rObj = productoService.descontarUnidadesStock(idProducto, producto, unidades);
-
             if(rObj.getSuccessfully()){
                 rObj.setAsSuccessfully();
                 rObj.setMsj("Producto agregado al carrito de compras con éxito");
