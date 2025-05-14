@@ -19,10 +19,10 @@ public class MetodoPagoService {
 
     private static ResponseObject rObj;
 
-    public ResponseObject obtenerMetodosPago(){
-        rObj = new ResponseObject();
+    public List<MetodoPago> obtenerMetodosPago(){
+        //rObj = new ResponseObject();
         List<MetodoPago> metodosPago = (List<MetodoPago>) metodoPagoRepository.findAll();
-        if(!metodosPago.isEmpty()){
+        /*if(!metodosPago.isEmpty()){
             rObj.setMsj("Consulta ejecutada con exito");
             rObj.setObj(metodosPago);
             rObj.setAsSuccessfully();  
@@ -30,8 +30,8 @@ public class MetodoPagoService {
         }
 
         rObj.setMsj("No hay metodos de pago creados");            
-        rObj.setAsSuccessfully();        
-        return rObj;
+        rObj.setAsSuccessfully();*/        
+        return metodosPago;
     }
 
     public ResponseObject obtenerMetodoPagoPorId(int idMetodoPago){

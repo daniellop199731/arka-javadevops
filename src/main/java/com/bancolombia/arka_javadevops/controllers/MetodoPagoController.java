@@ -10,6 +10,8 @@ import com.bancolombia.arka_javadevops.utils.ResponseObject;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +28,9 @@ public class MetodoPagoController {
     private final MetodoPagoService metodoPagoService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> obtenerMetodosPago() {
-        return new ResponseEntity<>(metodoPagoService.obtenerMetodosPago(), HttpStatus.OK);
+    public ResponseEntity<List<MetodoPago>> obtenerMetodosPago() {
+        List<MetodoPago> list = metodoPagoService.obtenerMetodosPago();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @PostMapping("/crearNuevo")
