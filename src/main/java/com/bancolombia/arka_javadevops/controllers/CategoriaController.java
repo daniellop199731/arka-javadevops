@@ -1,5 +1,7 @@
 package com.bancolombia.arka_javadevops.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bancolombia.arka_javadevops.models.Categoria;
 import com.bancolombia.arka_javadevops.services.CategoriaService;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import jakarta.validation.Valid;
 
@@ -30,23 +31,32 @@ public class CategoriaController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> obtenerCategorias() {
-        return new ResponseEntity<>(categoriaService.obtenerCategorias(), HttpStatus.OK);
+    public ResponseEntity<List<Categoria>> obtenerCategorias() {
+        List<Categoria> categorias = categoriaService.obtenerCategorias();
+        return new ResponseEntity<>(categorias, HttpStatus.OK);
     }
 
     @GetMapping("/busquedaPorNombre/{nombreCategoria}")
-    public ResponseEntity<ResponseObject> obtenerCategoriasPorNombre(@PathVariable String nombreCategoria) {
+    public ResponseEntity<List<Categoria>> obtenerCategoriasPorNombre(@PathVariable String nombreCategoria) {
             return new ResponseEntity<>(categoriaService.obtenerCategoriasPorNombre(nombreCategoria), HttpStatus.OK);
     }
 
     @PostMapping("/crearNueva")
-    public ResponseEntity<ResponseObject> crearNueva(@Valid @RequestBody Categoria categoria) {
-        return new ResponseEntity<>(categoriaService.crearNueva(categoria), HttpStatus.CREATED);
+    public ResponseEntity<Categoria> crearNueva(@Valid @RequestBody Categoria categoria) {
+        Categoria nuevaCategoria = categoriaService.crearNueva(categoria);
+        if(nuevaCategoria == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(nuevaCategoria, HttpStatus.CREATED);
     }
     
-    @PutMapping("/actualizar")
-    public ResponseEntity<ResponseObject> actualizar(@Valid @RequestBody Categoria categoria) {
-        return new ResponseEntity<>(categoriaService.actualizarCategoria(categoria), HttpStatus.OK);
+    @PutMapping("/actualizar/{idCategoria}")
+    public ResponseEntity<Categoria> actualizar(@PathVariable int idCategoria, @Valid @RequestBody Categoria categoria) {
+        Categoria categoriaActualizar = categoriaService.actualizarCategoria(idCategoria, categoria);
+        if(categoriaActualizar == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(categoriaActualizar, HttpStatus.OK);
     }
     
 }

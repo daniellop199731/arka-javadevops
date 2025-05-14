@@ -8,7 +8,6 @@ import com.bancolombia.arka_javadevops.models.MetodoPago;
 import com.bancolombia.arka_javadevops.models.MetodoPagoUsuario;
 import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.repositories.MetodoPagoUsuarioRepository;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,37 +19,22 @@ public class MetodoPagoUsuarioService {
     private final UsuarioService usuarioService;
     private final MetodoPagoService metodoPagoService;
 
-    private static ResponseObject rObj;
-
-    public ResponseObject obtenerMetodosPagosUsuario(int idUsuario){
-        rObj = new ResponseObject();
+    public List<MetodoPagoUsuario> obtenerMetodosPagosUsuario(int idUsuario){
         Usuario usuario = new Usuario();
         usuario.setIdUsuario(idUsuario);
         List<MetodoPagoUsuario> metodosPagoUsuario = metodoPagoUsuarioRepository.findByUsuarioMetodoPago(usuario);
-        rObj.setAsSuccessfully();
-        rObj.setObj(metodosPagoUsuario);
-        if(metodosPagoUsuario.isEmpty()){
-            rObj.setMsj("El usuario no tiene metodos de pago");
-        } else {
-            rObj.setMsj("Consulta ejecutada con exito");
-        }
-        return rObj;
+        return metodosPagoUsuario;
     }
 
-    public ResponseObject agregarMetodoPagoUsuario(int idUsuario, int idMetodoPago, double valorCuenta){
-        rObj = usuarioService.obtenerUsuarioPorId(idUsuario);
-        if(!rObj.getSuccessfully()){
-            return rObj;
+    public boolean agregarMetodoPagoUsuario(int idUsuario, int idMetodoPago, double valorCuenta){
+        if(usuarioService.obtenerUsuarioPorId(idUsuario) == null){
+            return false;
         }
-        rObj = metodoPagoService.obtenerMetodoPagoPorId(idMetodoPago);
-        if(!rObj.getSuccessfully()){
-            return rObj;
+        if(metodoPagoService.obtenerMetodoPagoPorId(idMetodoPago) == null){
+            return false;
         }   
         if(valorCuenta <= 0){
-            rObj.setAsNotSuccessfully();
-            rObj.setMsj("El valor debe ser mayor a cero");
-            rObj.setObj("");
-            return rObj;
+            return false;
         }
         
         MetodoPagoUsuario metodoPagoUsuario = new MetodoPagoUsuario();
@@ -62,11 +46,8 @@ public class MetodoPagoUsuarioService {
         metodoPagoUsuario.setUsuarioMetodoPago(usuario);
         metodoPagoUsuario.setMetodoPago(metodoPago);
         metodoPagoUsuario.setValorCuentaMetodoPago(valorCuenta);
-
-        rObj.setAsSuccessfully();
-        rObj.setMsj("Metodo de pago agregado");
-        rObj.setObj(metodoPagoUsuarioRepository.save(metodoPagoUsuario));
-        return rObj;
+        metodoPagoUsuarioRepository.save(metodoPagoUsuario);
+        return true;
     }
 
 }

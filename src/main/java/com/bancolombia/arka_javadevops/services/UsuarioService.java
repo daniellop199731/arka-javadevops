@@ -5,10 +5,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
 import com.bancolombia.arka_javadevops.mappers.UsuarioMapper;
 import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.repositories.UsuarioRepository;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,8 +18,6 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper;
-
-    private static ResponseObject rObj;
 
     /* @RequiredArgsConstructor //Reemplaza el constructor
         La etiqueta lo que hara es que a todos los atributos con final, lo tendra encuenta
@@ -32,72 +30,34 @@ public class UsuarioService {
     }
     */    
 
-    public ResponseObject obtenerUsuarios(){
-        rObj = new ResponseObject();
-        rObj.setAsSuccessfully();
-        rObj.setMsj("Consulta ejecutada con exito");        
-        rObj.setObj(usuarioMapper.toDto((List<Usuario>) usuarioRepository.findAll()));
-        return rObj;
+    public List<UsuarioDTO> obtenerUsuarios(){
+        return usuarioMapper.toDto((List<Usuario>) usuarioRepository.findAll());
     }
 
-    public ResponseObject obtenerUsuariosPorOrdenNombres(){
-        rObj = new ResponseObject();
-        rObj.setAsSuccessfully();
-        rObj.setMsj("Consulta ejecutada con exito");
-        rObj.setObj(usuarioMapper.toDto(usuarioRepository.usuariosOrderByNombres()));
-        return rObj;
+    public List<UsuarioDTO> obtenerUsuariosPorOrdenNombres(){
+        return usuarioMapper.toDto(usuarioRepository.usuariosOrderByNombres());
     }
 
-    public ResponseObject obtenerUsuarioPorId(int idUsuario){
-        rObj = new ResponseObject();
+    public UsuarioDTO obtenerUsuarioPorId(int idUsuario){
         Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
         if(usuario.isPresent()){
-            rObj.setObj(usuarioMapper.toDto(usuario.get()));
-            rObj.setMsj("Usuario encontrado");
-            rObj.setAsSuccessfully();
-        } else {
-            rObj.setMsj("El usuario con id ".concat(idUsuario+"").concat(" no existe"));
+            return usuarioMapper.toDto(usuario.get());
         }
-        return rObj;
+        return null;
     }
 
-    public ResponseObject obtenerUsuarioPorIdWitOutDto(int idUsuario){
-        rObj = new ResponseObject();
-        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
-        if(usuario.isPresent()){
-            rObj.setObj(usuario.get());
-            rObj.setMsj("Usuario encontrado");
-            rObj.setAsSuccessfully();
-        } else {
-            rObj.setMsj("El usuario con id ".concat(idUsuario+"").concat(" no existe"));
-        }
-        return rObj;
+    public Usuario obtenerUsuarioPorIdWitOutDto(int idUsuario){
+        return usuarioRepository.findById(idUsuario).orElse(null);
     }    
 
-    public ResponseObject crearNuevoUsuario(Usuario usuario){
-        rObj = new ResponseObject();
-        boolean continueToSave = true;
+    public UsuarioDTO crearNuevoUsuario(Usuario usuario){
         if(this.existeUsuarioPorIdentificacion(usuario.getIdentificacionUsuario())){            
-            rObj.setMsj("El usuario con la identificacion "
-                .concat(usuario.getIdentificacionUsuario()).concat(" ya existe en el sistema"));            
-                continueToSave = false;
+            return null;
         } 
-
-        if(continueToSave){
-            /**
-             * LOGICA ANTES DE GUARDAR EN BASE DE DATOS, AQUI
-             * ...
-             */           
-            usuarioRepository.save(usuario);
-            rObj.setObj(usuarioMapper.toDto(usuario));
-            rObj.setMsj("Usuario creado con exito");
-            rObj.setAsSuccessfully();
-        }
-        return rObj; 
+        return usuarioMapper.toDto(usuarioRepository.save(usuario)); 
     }
 
-    public ResponseObject actualizarUsuario(int idUsuario,Usuario usuario){
-        rObj = new ResponseObject();
+    public UsuarioDTO actualizarUsuario(int idUsuario,Usuario usuario){
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(idUsuario);
         if(usuarioEncontrado.isPresent()){            
             /**
@@ -105,24 +65,16 @@ public class UsuarioService {
             */
             usuario.setIdUsuario(idUsuario);    
             if(this.existeUsuarioPorIdentificacionParaActualizar(usuario)){
-                rObj.setMsj("Ya existe un usuario con la identificacion ".concat(usuario.getIdentificacionUsuario()));
-                rObj.setObj("");
-                return rObj;           
+                return null;           
             }                    
-            /**/            
-            usuarioRepository.save(usuario);
-            rObj.setObj(usuarioMapper.toDto(usuario));
-            rObj.setMsj("Usuario actualizado con exito");
-            rObj.setAsSuccessfully(); 
-            return rObj;               
+            /**/ 
+            return usuarioMapper.toDto(usuarioRepository.save(usuario));              
         } 
         
-        rObj.setMsj("El usuario con el ID ".concat(idUsuario+"").concat(" no existe"));
-        return rObj;
+        return null;
     }    
 
-    public ResponseObject eliminarUsuarioPorId(int idUsuario){
-        rObj = new ResponseObject();
+    public boolean eliminarUsuarioPorId(int idUsuario){
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(idUsuario);        
         if(usuarioEncontrado.isPresent()){
             /**
@@ -130,59 +82,23 @@ public class UsuarioService {
              * ...
              */            
             usuarioRepository.deleteById(idUsuario);
-            rObj.setObj(usuarioMapper.toDto(usuarioEncontrado.get()));
-            rObj.setMsj("Usuario eliminado con exito");
-            rObj.setAsSuccessfully();
-            return rObj;
+            return true;
         }
-        rObj.setMsj("El usuario con el ID ".concat(idUsuario+"").concat(" no existe"));
-        return rObj;
+        return false;
         
     }
 
-    public ResponseObject obtenerUsuariosPorNombres(String nombresuString){
-        rObj = new ResponseObject();
-        List<Usuario> usuarios = usuarioRepository.findByNombresUsuario(nombresuString);
-        if(usuarios.size() > 0){
-            rObj.setObj(usuarioMapper.toDto(usuarios));
-            rObj.setMsj("Usuarios encontrados");
-            rObj.setAsSuccessfully();
-        } else {
-            rObj.setMsj("De momento no existen usuarios");
-            rObj.setAsSuccessfully();
-        }
-        return rObj;
+    public List<UsuarioDTO> obtenerUsuariosPorNombres(String nombresuString){
+        return usuarioMapper.toDto(usuarioRepository.findByNombresUsuario(nombresuString));
     }
 
-    public ResponseObject obtenerUsuarioPorIdentificacion(String identificacionUsuario){
-        rObj = new ResponseObject();
+    public UsuarioDTO obtenerUsuarioPorIdentificacion(String identificacionUsuario){
         Usuario usuario = usuarioRepository.findByIdentificacionUsuario(identificacionUsuario);
-        if(usuario != null){
-            rObj.setObj(usuarioMapper.toDto(usuario));
-            rObj.setMsj("Usuario encontrado");
-            rObj.setAsSuccessfully();
-        } else {
-            rObj.setMsj("No existe usuario con identificacion ".concat(identificacionUsuario));
-            rObj.setAsSuccessfully();
-        }
-        return rObj;
+        if(usuario == null){
+            return null;
+        } 
+        return usuarioMapper.toDto(usuario);
     }
-
-    //////////////////////////////////////
-    public ResponseObject crearUsuarioSencillo(Usuario usuario){
-        rObj = new ResponseObject();
-        if(!this.existeUsuarioPorIdentificacion(usuario.getIdentificacionUsuario())){
-            rObj.setAsSuccessfully();
-            rObj.setMsj("Usuario creado con exito");
-            rObj.setObj(usuarioMapper.toDto(usuarioRepository.save(usuario)));
-        } else {
-            rObj.setAsNotSuccessfully();;
-            rObj.setMsj("Ya existe un usuario con la identificacion "
-                .concat(usuario.getIdentificacionUsuario()));            
-        }
-        return rObj;
-    }
-    //////////////////////////////////////
 
     public boolean existeUsuarioPorIdentificacion(String identificacionUsuario){
         if(identificacionUsuario != null){

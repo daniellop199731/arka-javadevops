@@ -9,41 +9,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static ResponseObject rObj;
-
     //MethodArgumentNotValidException: Se dispara cuando @Valid incumple algun atributo de la clase entity
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ResponseObject> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        rObj = new ResponseObject();
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), error.getDefaultMessage());
         });
-        rObj.setAsNotSuccessfully();
-        rObj.setMsj(errors);
-        return ResponseEntity.badRequest().body(rObj);
+        return ResponseEntity.badRequest().body(errors);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ResponseObject> handleDataIntegrityViolationException(DataIntegrityViolationException ex){
-        rObj = new ResponseObject();
-        rObj.setAsNotSuccessfully();
-        rObj.setMsj(ex.getMessage());
-        return ResponseEntity.badRequest().body(rObj);
+    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex){
+        return ResponseEntity.badRequest().body("Error con los datos enviados: ".concat(ex.getMessage()));
     }
 
     @ExceptionHandler(DataAccessResourceFailureException.class)
-    public ResponseEntity<ResponseObject> handleDataAccessResourceFailureException(DataAccessResourceFailureException ex){
-        rObj = new ResponseObject();
-        rObj.setAsNotSuccessfully();
-        rObj.setMsj("Falla por conexion a BD: ".concat(ex.getMessage()));        
-        return ResponseEntity.internalServerError().body(rObj);
+    public ResponseEntity<?> handleDataAccessResourceFailureException(DataAccessResourceFailureException ex){       
+        return ResponseEntity.internalServerError().body("Falla por conexion a BD: ".concat(ex.getMessage()));
     }
 
 

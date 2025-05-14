@@ -5,11 +5,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.bancolombia.arka_javadevops.DTO.ProductoDTO;
 import com.bancolombia.arka_javadevops.mappers.ProductoMapper;
 import com.bancolombia.arka_javadevops.models.Categoria;
 import com.bancolombia.arka_javadevops.models.Producto;
 import com.bancolombia.arka_javadevops.repositories.ProductoRepository;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,170 +21,81 @@ public class ProductoService {
 
     private final ProductoMapper productoMapper;
 
-    private static ResponseObject rObj;
-
-    public ResponseObject obtenerProductos(){
-        rObj = new ResponseObject();
-        List<Producto> productos = (List<Producto>) productoRepository.findAll();
-        if(productos.isEmpty()){
-            rObj.setMsj("En el momento no hay productos para mostrar");
-        } else {
-            rObj.setMsj("Consulta ejecutada con exito");
-            rObj.setAsSuccessfully();
-            rObj.setObj(productos);
-        }
-        return rObj;
+    public List<Producto> obtenerProductos(){
+        return (List<Producto>) productoRepository.findAll();
     }
 
-    public ResponseObject obtenerProductoPorId(int idProducto){
-        rObj = new ResponseObject();
+    public Producto obtenerProductoPorId(int idProducto){
         Optional<Producto> producto = productoRepository.findById(idProducto);
         if(producto.isPresent()){
-            rObj.setMsj("Producto encontrado");
-            rObj.setAsSuccessfully();
-            rObj.setObj(producto.get());
-        } else {
-            rObj.setMsj("No se encontró el producto");
+            return producto.get();
         }
-        return rObj;
+        return null;
     }
 
-    public ResponseObject productosNombreDescripcion(String texto){
-        rObj = new ResponseObject();
-        List<Producto> productos = productoRepository.productosNombreDescripcion(texto);
-        if(productos.isEmpty()){
-            rObj.setMsj("No se encontraron productos");
-        } else {
-            rObj.setMsj("Productos encontrados");
-            rObj.setAsSuccessfully();
-            rObj.setObj(productos);
-        }
-        return rObj;
+    public List<Producto> productosNombreDescripcion(String texto){
+        return productoRepository.productosNombreDescripcion(texto);
     }
 
-    public ResponseObject productosOrdenadosAsc(){
-        rObj = new ResponseObject();
-        List<Producto> productos = (List<Producto>) productoRepository.productosOrdenadosAsc();
-        if(productos.isEmpty()){
-            rObj.setMsj("En el momento no hay productos para mostrar");
-        } else {
-            rObj.setMsj("Consulta ejecutada con exito");
-            rObj.setAsSuccessfully();
-            rObj.setObj(productos);
-        }
-        return rObj;
+    public List<Producto> productosOrdenadosAsc(){
+        return (List<Producto>) productoRepository.productosOrdenadosAsc();
     }    
 
-    public ResponseObject productosPorRangoPrecio(int precioMinimo, int precioMaximo){
-        rObj = new ResponseObject();
-        List<Producto> productos = (List<Producto>) productoRepository.productosPorRangoPrecio(precioMinimo, precioMaximo);
-        if(productos.isEmpty()){
-            rObj.setMsj("En el momento no hay productos para mostrar");
-        } else {
-            rObj.setMsj("Consulta ejecutada con exito");
-            rObj.setAsSuccessfully();
-            rObj.setObj(productos);
-        }
-        return rObj;
+    public List<Producto> productosPorRangoPrecio(int precioMinimo, int precioMaximo){
+        return (List<Producto>) productoRepository.productosPorRangoPrecio(precioMinimo, precioMaximo);
     }     
 
-    public ResponseObject crearNuevo(Producto producto){
-        rObj = new ResponseObject();
+    public Producto crearNuevo(Producto producto){
         if(this.existeProductoPorReferencia(producto.getReferenciaProducto())){
-            rObj.setMsj("Ya existe un producto con la referencia ".concat(producto.getReferenciaProducto()));
-            rObj.setObj("");
-            return rObj;
+            return null;
         }
-
-        rObj.setObj(productoRepository.save(producto));
-        rObj.setMsj("Producto guardado con exito");
-        rObj.setAsSuccessfully();
-
-        return rObj;
+        return productoRepository.save(producto);
     }
 
-    public ResponseObject crearNuevoDto(Producto producto){
-        rObj = new ResponseObject();
+    public ProductoDTO crearNuevoDto(Producto producto){
         if(this.existeProductoPorReferencia(producto.getReferenciaProducto())){
-            rObj.setMsj("Ya existe un producto con la referencia ".concat(producto.getReferenciaProducto()));
-            rObj.setObj("");
-            return rObj;
+            return null;
         }
-
-        productoRepository.save(producto);
-        rObj.setObj(productoMapper.toDto(producto));
-        rObj.setMsj("Producto guardado con exito");
-        rObj.setAsSuccessfully();
-
-        return rObj;
+        return productoMapper.toDto(productoRepository.save(producto));
     }
 
-    public ResponseObject actualizar(int idProducto, Producto producto){
-        rObj = new ResponseObject();
+    public Producto actualizar(int idProducto, Producto producto){
         Optional<Producto> productoEncontrado = productoRepository.findById(idProducto);
         if(productoEncontrado.isPresent()){
             producto.setIdProducto(idProducto);
             if(this.existeProductoPorReferenciaParaActualizar(producto)){
-                rObj.setMsj("Ya existe un producto con la referencia ".concat(producto.getReferenciaProducto()));
-                rObj.setObj("");
-                return rObj;
-            }                
-
-            rObj.setAsSuccessfully(); 
-            rObj.setMsj("Producto actualizado con exito");
-            rObj.setObj(productoRepository.save(producto));
-            return rObj;                             
+                return null;
+            }
+            return productoRepository.save(producto);                             
         }      
-
-        rObj.setMsj("El producto a actualizar no existe");
-        return rObj;
+        return null;
     }
 
-    public ResponseObject eliminar(int idProducto){
-        rObj = new ResponseObject();
+    public boolean eliminar(int idProducto){
         Optional<Producto> producto = productoRepository.findById(idProducto);
         if(producto.isPresent()){
             productoRepository.deleteById(idProducto);
-            rObj.setMsj("El Producto "
-                .concat(producto.get().getNombreProducto())
-                .concat("-")
-                .concat(producto.get().getIdProducto()+"")
-                .concat(" fue eliminado exitosamente"));
-            rObj.setAsSuccessfully();
-            rObj.setObj(producto);            
-        } else {
-            rObj.setMsj("No se encontró el producto para ser eliminado");
+            return true;
         }
-
-        return rObj;
+        return false;
     }
 
-    public ResponseObject descontarUnidadesStock(int idProducto, Producto producto, int unidades){
-        rObj = new ResponseObject();
+    public boolean descontarUnidadesStock(int idProducto, Producto producto, int unidades){
         producto.setStockProducto(producto.getStockProducto()-unidades);
-        rObj = actualizar(idProducto, producto);
-        if(rObj.getSuccessfully()){
-            producto = (Producto) rObj.getObj();
+        producto = actualizar(idProducto, producto);
+        if(producto != null){
             if(producto.getStockProducto() <= producto.getStockMinimoProducto()){
                 System.out.println("Crea notificacion de abastecimineto");
             }
+            return true;
         }
-        return rObj;
+        return false;
     }
 
-    public ResponseObject productosPorCategoria(int idCategoria){
-        rObj = new ResponseObject();
+    public List<Producto> productosPorCategoria(int idCategoria){
         Categoria categoria = new Categoria();
         categoria.setIdCategoria(idCategoria);
-        List<Producto> productos = productoRepository.findByCategoria(categoria);
-        rObj.setAsSuccessfully();
-        if(productos.isEmpty()){
-            rObj.setMsj("No hay productos de esa categoria");
-            rObj.setObj(productos);
-        }
-        rObj.setMsj("Consulta ejecutada con exito");
-        rObj.setObj(productos);
-        return rObj;
+        return productoRepository.findByCategoria(categoria);
 
     }
 

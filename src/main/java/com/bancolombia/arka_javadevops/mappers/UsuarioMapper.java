@@ -17,12 +17,14 @@ public class UsuarioMapper {
         }
 
         return new UsuarioDTO(
-            usuario.getIdentificacionUsuario()
+            usuario.getIdUsuario()
+            ,usuario.getIdentificacionUsuario()
             ,usuario.getCorreoElectronicoUsuario()
             ,usuario.getNombresUsuario()
             ,usuario.getApellidosUsuario()
             ,usuario.getDireccionDespachoUsuario()
             ,usuario.getNicknameUsuario()
+            ,usuario.getPerfil()
         );
     }
 

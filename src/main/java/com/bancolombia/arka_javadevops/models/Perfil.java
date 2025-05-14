@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,8 +33,7 @@ public class Perfil {
     //no es necesaria
     @Column(name = "nombrePerfil")   
     @NotBlank(message = "Debe proporcionar un nombre para el perfil")
-    @NotNull(message = "Debe proporcionar un nombre para el perfil")
-    @Max(30)                              
+    @NotNull(message = "Debe proporcionar un nombre para el perfil")                              
     private String nombrePerfil;
 
     @JsonBackReference

@@ -1,80 +1,56 @@
 package com.bancolombia.arka_javadevops.services;
 
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.bancolombia.arka_javadevops.models.Proveedor;
 import com.bancolombia.arka_javadevops.repositories.ProveedorRepository;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class ProveedorService {
 
-    @Autowired
-    private ProveedorRepository proveedorRepository;
+    private final ProveedorRepository proveedorRepository;
 
-    private static ResponseObject rObj;
-
-    public ProveedorService() {
+    public List<Proveedor> obtenerProveedores(){
+        return (List<Proveedor>)proveedorRepository.findAll();
     }
 
-    public ResponseObject obtenerProveedores(){
-        rObj = new ResponseObject();
-        List<Proveedor> proveedores = (List<Proveedor>)proveedorRepository.findAll();
-        if(!proveedores.isEmpty()){
-            rObj.setMsj("Consulta ejecutada con exito");
-            rObj.setAsSuccessfully();
-            rObj.setObj(proveedores);
-        } else {
-            rObj.setMsj("No hay proveedores registrados");
-        }
-        return rObj;
-    }
-
-    public ResponseObject obtenerProveedorPorIdentificacion(String identificacionProveedor){
-        rObj = new ResponseObject();
+    public Proveedor obtenerProveedorPorIdentificacion(String identificacionProveedor){
         Proveedor proveedor = proveedorRepository.findByIdentificacionProveedor(identificacionProveedor);
-        if(proveedor != null){
-            rObj.setMsj("Proveedor encontrado");
-            rObj.setAsNotSuccessfully();
-            rObj.setObj(proveedor);
-        } else {
-            rObj.setMsj("No existe el proveedor con identificacion: ".concat(identificacionProveedor));
+        if(proveedor == null){
+            return null;
         }
-        return rObj;
+        return proveedor;
     }
 
-    public ResponseObject crearNuevo(Proveedor proveedor){
-        rObj = new ResponseObject();
-        Proveedor proveedorNuevo = (Proveedor) this.obtenerProveedorPorIdentificacion(proveedor.getIdentificacionProveedor()).getObj();
+    public Proveedor crearNuevo(Proveedor proveedor){
+        Proveedor proveedorNuevo = this.obtenerProveedorPorIdentificacion(proveedor.getIdentificacionProveedor());
         if(proveedorNuevo != null){
-            rObj.setMsj("El proveedor con identificacion ".concat(proveedor.getIdentificacionProveedor()
-                .concat(" ya existe")));
-        } else {
-            rObj.setObj(proveedorRepository.save(proveedor));
-            rObj.setMsj("Proveedor guardado con éxito");
-            rObj.setAsSuccessfully();
+            return null;
         }
-        return rObj;
+        return proveedorRepository.save(proveedor);
     }
 
-    public ResponseObject actualizar(Proveedor proveedor){
-        rObj = new ResponseObject();
-        Proveedor proveedorEncontrado = (Proveedor) this.obtenerProveedorPorIdentificacion(proveedor.getIdentificacionProveedor()).getObj();
-        if(proveedorEncontrado != null && 
-            ((proveedorEncontrado != null ? proveedorEncontrado.getIdProveedor():0) 
-                != 
-                proveedor.getIdProveedor())){
-            rObj.setMsj("El proveedor con identificacion ".concat(proveedor.getIdentificacionProveedor()
-                .concat(" ya existe")));
-        } else {
-            rObj.setObj(proveedorRepository.save(proveedor));
-            rObj.setMsj("Proveedor actualizado con éxito");
-            rObj.setAsSuccessfully();            
-        }
-        return rObj;
+    public Proveedor actualizar(int idProveedor, Proveedor proveedor){
+        Optional<Proveedor> provedorEncontrado = proveedorRepository.findById(idProveedor);
+        if(provedorEncontrado.isPresent()){            
+            /**
+             * POSIBLE LOGICA ANTES DE ACTUALIZAR EN BASE DE DATOS, AQUI
+            */
+            if(provedorEncontrado.isPresent() && 
+                ((provedorEncontrado.isPresent() ? provedorEncontrado.get().getIdProveedor():0) 
+                    != 
+                    proveedor.getIdProveedor())){
+                    return null;
+            }                  
+            /**/ 
+            return proveedorRepository.save(proveedor);              
+        } 
+        return null;
     }
     
 }

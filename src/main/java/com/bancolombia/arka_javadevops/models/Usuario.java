@@ -4,7 +4,7 @@ package com.bancolombia.arka_javadevops.models;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -60,9 +60,7 @@ public class Usuario {
     @NotBlank(message = "Debe proporcionar una direccion de despacho")
     private String direccionDespachoUsuario;
 
-    @NotNull(message = "Debe proporcionar una contraseña")
-    @NotBlank(message = "Debe proporcionar una contraseña")
-    @Size(min = 8, max = 45, message = "La contraseña debe tener entre 8 y 45 caracteres")
+    @Column(nullable = true)
     private String contrasennaUsuario;
 
     private String nicknameUsuario;

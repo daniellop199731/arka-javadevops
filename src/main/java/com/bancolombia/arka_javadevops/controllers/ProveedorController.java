@@ -1,5 +1,7 @@
 package com.bancolombia.arka_javadevops.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bancolombia.arka_javadevops.models.Proveedor;
 import com.bancolombia.arka_javadevops.services.ProveedorService;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import jakarta.validation.Valid;
 
@@ -32,22 +33,30 @@ public class ProveedorController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> obtenerProveedores() {        
+    public ResponseEntity<List<Proveedor>> obtenerProveedores() {        
         return new ResponseEntity<>(proveedorService.obtenerProveedores(), HttpStatus.OK);
     }
 
     @GetMapping("/{identificacionProveedor}")
-    public ResponseEntity<ResponseObject> obtenerProveedorPorIdentificacion(@PathVariable String identificacionProveedor) {
-        return new ResponseEntity<>(proveedorService.obtenerProveedorPorIdentificacion(identificacionProveedor), HttpStatus.OK);       
+    public ResponseEntity<Proveedor> obtenerProveedorPorIdentificacion(@PathVariable String identificacionProveedor) {
+        Proveedor proveedor = proveedorService.obtenerProveedorPorIdentificacion(identificacionProveedor);
+        if(proveedor == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(proveedor, HttpStatus.OK);       
     }
 
     @PostMapping("/crearNuevo")
-    public ResponseEntity<ResponseObject> crearNuevo(@Valid @RequestBody Proveedor proveedor) {
-        return new ResponseEntity<>(proveedorService.crearNuevo(proveedor), HttpStatus.CREATED);
+    public ResponseEntity<Proveedor> crearNuevo(@Valid @RequestBody Proveedor proveedor) {
+        Proveedor nuevoProveedor = proveedorService.crearNuevo(proveedor);
+        if(nuevoProveedor == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(nuevoProveedor, HttpStatus.CREATED);
     }
     
-    @PutMapping("/actualizar")
-    public ResponseEntity<ResponseObject> actualizar(@Valid @RequestBody Proveedor proveedor) {
-        return new ResponseEntity<>(proveedorService.actualizar(proveedor), HttpStatus.OK);
+    @PutMapping("/actualizar/{idProveedor}")
+    public ResponseEntity<Proveedor> actualizar(@PathVariable int idProveedor, @Valid @RequestBody Proveedor proveedor) {
+        return new ResponseEntity<>(proveedorService.actualizar(idProveedor, proveedor), HttpStatus.OK);
     }
 }

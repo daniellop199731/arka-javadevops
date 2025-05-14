@@ -3,12 +3,14 @@ package com.bancolombia.arka_javadevops.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
 import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.services.UsuarioService;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,60 +30,68 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    private static ResponseObject rObj;
-
     @GetMapping("")
-    public ResponseEntity<ResponseObject> obtenerUsuarios() {        
-        return new ResponseEntity<>(usuarioService.obtenerUsuarios(), HttpStatus.OK);
+    public ResponseEntity<List<UsuarioDTO>> obtenerUsuarios() {      
+        List<UsuarioDTO> usuarios = usuarioService.obtenerUsuarios();
+        return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<ResponseObject> obtenerUsuarioPorId(@PathVariable int idUsuario){
-        return new ResponseEntity<>(usuarioService.obtenerUsuarioPorId(idUsuario), HttpStatus.OK);    
+    public ResponseEntity<UsuarioDTO> obtenerUsuarioPorId(@PathVariable int idUsuario){
+        UsuarioDTO usuario = usuarioService.obtenerUsuarioPorId(idUsuario);
+        if(usuario == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
     //Define una ruta qye permita buscar y devolver una lista de usuarios filtrados por su nombre
     @GetMapping("/busquedaPorNombre")
-    public ResponseEntity<ResponseObject> obtenerUsuariosPorNombre(@RequestParam(value = "nombresUsuario", required = true) String nombreUsuario) {
-        return new ResponseEntity<>(usuarioService.obtenerUsuariosPorNombres(nombreUsuario), HttpStatus.OK);      
+    public ResponseEntity<List<UsuarioDTO>> obtenerUsuariosPorNombre(@RequestParam(value = "nombresUsuario", required = true) String nombreUsuario) {
+        List<UsuarioDTO> usuarios = usuarioService.obtenerUsuariosPorNombres(nombreUsuario);
+        return new ResponseEntity<>(usuarios, HttpStatus.OK);      
     }
 
     //Define una ruta que te devuelva la lista de todos los usuarios ordenados alfabéticamente
     @GetMapping("/obtenerUsuariosPorOrdenNombres")
-    public ResponseEntity<ResponseObject> obtenerUsuariosPorOrdenNombres(){
-        return new ResponseEntity<>(usuarioService.obtenerUsuariosPorOrdenNombres(), HttpStatus.OK);
+    public ResponseEntity<List<UsuarioDTO>> obtenerUsuariosPorOrdenNombres(){
+        List<UsuarioDTO> usuarios = usuarioService.obtenerUsuariosPorOrdenNombres();
+        return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 
     @GetMapping("/busquedaPorIdentificacion")
-    public ResponseEntity<ResponseObject> obtenerUsuarioPorIdentificacion(@RequestParam(required = true) String identificacionUsuario) {
-        return new ResponseEntity<>(
-            usuarioService.obtenerUsuarioPorIdentificacion(identificacionUsuario), HttpStatus.OK);
+    public ResponseEntity<UsuarioDTO> obtenerUsuarioPorIdentificacion(@RequestParam(required = true) String identificacionUsuario) {
+        UsuarioDTO usuario = usuarioService.obtenerUsuarioPorIdentificacion(identificacionUsuario);
+        if(usuario == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
     }        
 
     @PostMapping("/crearNuevo")
-    public ResponseEntity<ResponseObject> crearNuevoUsuario(@Valid @RequestBody Usuario usuario) {
-        return new ResponseEntity<>(usuarioService.crearNuevoUsuario(usuario), HttpStatus.CREATED);
+    public ResponseEntity<UsuarioDTO> crearNuevoUsuario(@Valid @RequestBody Usuario usuario) {
+        UsuarioDTO usuarioDTO = usuarioService.crearNuevoUsuario(usuario);
+        if(usuarioDTO == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/actualizarUsuario/{idUsuario}")
-    public ResponseEntity<ResponseObject> putMethodName(@PathVariable int idUsuario, @Valid @RequestBody Usuario usuario) {    
-        rObj = usuarioService.actualizarUsuario(idUsuario, usuario);
-        if(rObj.getObj() == null){
-            return new ResponseEntity<>(rObj, HttpStatus.NOT_FOUND);
-        } 
-        if(!rObj.getSuccessfully()){
-            return new ResponseEntity<>(rObj, HttpStatus.CONFLICT);
+    public ResponseEntity<UsuarioDTO> putMethodName(@PathVariable int idUsuario, @Valid @RequestBody Usuario usuario) {    
+        UsuarioDTO usuarioActualizar = usuarioService.actualizarUsuario(idUsuario, usuario);
+        if(usuarioActualizar == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(rObj, HttpStatus.OK);
+        return new ResponseEntity<>(usuarioActualizar, HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{idUsuario}")
-    public ResponseEntity<ResponseObject> eliminarUsuarioPorId(@PathVariable(required = true) int idUsuario){
-        rObj = usuarioService.eliminarUsuarioPorId(idUsuario);
-        if(rObj.getObj() == null){
-            return new ResponseEntity<>(rObj, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Void> eliminarUsuarioPorId(@PathVariable(required = true) int idUsuario){
+        if(usuarioService.eliminarUsuarioPorId(idUsuario)){
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(rObj, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
              
     }   
 }

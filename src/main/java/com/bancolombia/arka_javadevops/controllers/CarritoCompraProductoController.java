@@ -3,10 +3,12 @@ package com.bancolombia.arka_javadevops.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bancolombia.arka_javadevops.models.CarritoCompraProducto;
 import com.bancolombia.arka_javadevops.services.CarritoCompraProductoService;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,30 +25,40 @@ public class CarritoCompraProductoController {
     private final CarritoCompraProductoService carritoCompraProductoService;
 
     @GetMapping("/{idCarrito}")
-    public ResponseEntity<ResponseObject> obtenerProductosCarrito(@PathVariable int idCarrito) {
-        return new ResponseEntity<>(carritoCompraProductoService.obtenerProductosCarrito(idCarrito), HttpStatus.OK);
+    public ResponseEntity<List<CarritoCompraProducto>> obtenerProductosCarrito(@PathVariable int idCarrito) {
+        List<CarritoCompraProducto> carritoCompraProductos = carritoCompraProductoService.obtenerProductosCarrito(idCarrito);
+        return new ResponseEntity<>(carritoCompraProductos, HttpStatus.OK);
     }
 
     /// Integración de Relaciones en Proyecto Arka [Actividad Requerida]
     /// 
     //Búsqueda de Pedidos por producto
     @GetMapping("/producto/{idProducto}")
-    public ResponseEntity<ResponseObject> carritosPorProducto(@PathVariable int idProducto) {
-        return new ResponseEntity<>(carritoCompraProductoService.carritosPorProducto(idProducto), HttpStatus.OK);
+    public ResponseEntity<List<CarritoCompraProducto>> carritosPorProducto(@PathVariable int idProducto) {
+        List<CarritoCompraProducto> carritoCompraProductos = carritoCompraProductoService.carritosPorProducto(idProducto);
+        if(carritoCompraProductos == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(carritoCompraProductos, HttpStatus.OK);
     }
 
     /// Integración de Relaciones en Proyecto Arka [Actividad Requerida]
     
 
     @PostMapping("/agregarProducto/{idUsuario}/{idProducto}/{unidades}")
-    public ResponseEntity<ResponseObject> agregarProductoCarrito(
+    public ResponseEntity<Object> agregarProductoCarrito(
         @PathVariable(required = true) int idUsuario
         , @PathVariable(required = true) int idProducto
         , @PathVariable(required = true) int unidades       
     ) { 
-        return new ResponseEntity<>(
-            carritoCompraProductoService.agregarProductoCarrito(
-                idUsuario, idProducto, unidades), HttpStatus.OK);
+        Object obj = carritoCompraProductoService.agregarProductoCarrito(idUsuario, idProducto, unidades);
+        if(obj == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if(obj.getClass() == String.class){
+            return new ResponseEntity<>(obj, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);        
     }
     
 

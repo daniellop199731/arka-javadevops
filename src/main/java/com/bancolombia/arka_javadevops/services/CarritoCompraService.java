@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.bancolombia.arka_javadevops.DTO.CarritoCompraDTO;
 import com.bancolombia.arka_javadevops.mappers.CarritoCompraMapper;
 import com.bancolombia.arka_javadevops.models.CarritoCompra;
 import com.bancolombia.arka_javadevops.models.EstadoDespacho;
@@ -25,73 +26,46 @@ public class CarritoCompraService {
 
     private static ResponseObject rObj;
 
-    public ResponseObject crearNuevo(int idUsuario){
-        rObj = usuarioService.obtenerUsuarioPorIdWitOutDto(idUsuario);
-        if(rObj.getSuccessfully()){
+    public CarritoCompra crearNuevo(int idUsuario){
+        Usuario usuario = usuarioService.obtenerUsuarioPorIdWitOutDto(idUsuario);
+        if(usuario != null){
             CarritoCompra carritoCompra = new CarritoCompra();
             EstadoDespacho estadoDespacho = new EstadoDespacho();
             estadoDespacho.setIdEstadoDespacho(1);
-            carritoCompra.setUsuarioCarritoCompra((Usuario) rObj.getObj());            
+            carritoCompra.setUsuarioCarritoCompra(usuario);            
             carritoCompra.setEstadoDespacho(estadoDespacho);
-            rObj.setAsSuccessfully();
-            rObj.setMsj("Carrito de compras creado");
-            rObj.setObj(carritoCompraRepository.save(carritoCompra));
-            return rObj;
+            return carritoCompraRepository.save(carritoCompra);
         }
-        return rObj;
+        return null;
     }
 
-    public ResponseObject obtenerCarritoPorId(int idCarritoCompra){
+    public CarritoCompra obtenerCarritoPorId(int idCarritoCompra){
         rObj = new ResponseObject();
         Optional<CarritoCompra> carritoCompraEncontrado = carritoCompraRepository.findById(idCarritoCompra);
         if(carritoCompraEncontrado.isPresent()){
-            rObj.setAsSuccessfully();
-            rObj.setMsj("Carrito de compra encontrado");
-            rObj.setObj(carritoCompraEncontrado.get());
-            return rObj;
+            return carritoCompraEncontrado.get();
         }
-        rObj.setMsj("El carrito de compra con id ".concat(idCarritoCompra+"").concat(" no existe"));
-        return rObj;
+        return null;
     }
 
-    public ResponseObject caarritosPorUsuario(int idUsuario){
-        rObj = usuarioService.obtenerUsuarioPorIdWitOutDto(idUsuario);
-        if(!rObj.getSuccessfully()){
-            return rObj;
+    public List<CarritoCompraDTO> carritosPorUsuario(int idUsuario){
+        if(usuarioService.obtenerUsuarioPorIdWitOutDto(idUsuario) == null){
+            return null;
         }
         List<CarritoCompra> carritoCompras = carritoCompraRepository.findByUsuarioCarritoCompra((Usuario) rObj.getObj());
-        rObj.setAsSuccessfully();
-        rObj.setMsj("Carritos encontrados");
-        rObj.setObj(carritoCompraMapper.toDto(carritoCompras));
-        return rObj;
+        return carritoCompraMapper.toDto(carritoCompras);
     }
 
-    public ResponseObject carritoActual(int idUsuario){
-        rObj = new ResponseObject();
+    public CarritoCompra carritoActual(int idUsuario){
         List<CarritoCompra> carritosCompra = carritoCompraRepository.findCarritoActual(idUsuario);
         if(carritosCompra.size() == 0){
-            rObj.setMsj("No hay carrito de compras actual");
-            rObj.setObj("");
-            return rObj;
+            return null;
         }
-
-        rObj.setAsSuccessfully();
-        rObj.setMsj("Carrito actual encontrado");
-        rObj.setObj(carritosCompra.get(0));
-        return rObj;    
+        return carritosCompra.get(0);    
     }
 
-    public ResponseObject carritosAbandonados(){
-        rObj = new ResponseObject();
-        List<CarritoCompra> carritoCompras = carritoCompraRepository.carritosAbandonados();
-        rObj.setAsSuccessfully();
-        if(carritoCompras.isEmpty()){            
-            rObj.setMsj("No hay carritos abandonados");
-            rObj.setObj(carritoCompras);
-        }
-        rObj.setMsj("Consulta ejecutada con exito");
-        rObj.setObj(carritoCompraMapper.toDto(carritoCompras));
-        return rObj;
+    public List<CarritoCompraDTO> carritosAbandonados(){
+        return carritoCompraMapper.toDto(carritoCompraRepository.carritosAbandonados());
     }
 
     public ResponseObject carritoComprasPorFechas(String minDate, String maxDate){

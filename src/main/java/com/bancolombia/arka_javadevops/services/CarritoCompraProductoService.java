@@ -8,7 +8,6 @@ import com.bancolombia.arka_javadevops.models.CarritoCompra;
 import com.bancolombia.arka_javadevops.models.CarritoCompraProducto;
 import com.bancolombia.arka_javadevops.models.Producto;
 import com.bancolombia.arka_javadevops.repositories.CarritoCompraProductoRepository;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,90 +21,58 @@ public class CarritoCompraProductoService {
     private final ProductoService productoService;
     private final CarritoCompraService carritoCompraService;
 
-    private static ResponseObject rObj;
-
-    public ResponseObject obtenerProductosCarrito(int idCarrito){
-        rObj = new ResponseObject();
+    public List<CarritoCompraProducto> obtenerProductosCarrito(int idCarrito){
         CarritoCompra carritoCompra = new CarritoCompra();
         carritoCompra.setIdCarritoCompra(idCarrito);
-        List<CarritoCompraProducto> carritoCompraProductos = carritoCompraProductoRepository.findByCarritoCompra(carritoCompra);
-        rObj.setAsSuccessfully();
-        rObj.setObj(carritoCompraProductos);
-        if(carritoCompraProductos.isEmpty()){
-            rObj.setMsj("El carrito no tiene productos");
-        } else {
-            rObj.setMsj("Consulta ejecutada con exito");
-        }
-        return rObj;
+        return carritoCompraProductoRepository.findByCarritoCompra(carritoCompra);
     }
 
-    public ResponseObject carritosPorProducto(int idProducto){
-        rObj = productoService.obtenerProductoPorId(idProducto);
-        if(rObj.getSuccessfully()){
-            List<CarritoCompraProducto> carritoCompraProductos = carritoCompraProductoRepository.findByProductoCarritoCompra((Producto) rObj.getObj());
-            if(carritoCompraProductos.isEmpty()){
-                rObj.setAsSuccessfully();
-                rObj.setMsj("No se encontraron carritos con el producto ");
-                rObj.setObj(carritoCompraProductos);
-            }
-            rObj.setAsSuccessfully();
-            rObj.setMsj("Carritos encontrados");
-            rObj.setObj(carritoCompraProductos);
+    public List<CarritoCompraProducto> carritosPorProducto(int idProducto){
+        Producto producto = productoService.obtenerProductoPorId(idProducto);
+        if( producto != null){
+            return carritoCompraProductoRepository.findByProductoCarritoCompra(producto);
         }
-        
-        return rObj;
+        return null;
     }
 
-    public ResponseObject agregarProductoCarrito(int idUsuario, int idProducto, int unidades){
-        rObj = usuarioService.obtenerUsuarioPorId(idUsuario);
-        if(!rObj.getSuccessfully()){
-            return rObj;
+    public Object agregarProductoCarrito(int idUsuario, int idProducto, int unidades){
+        if(usuarioService.obtenerUsuarioPorId(idUsuario) == null){
+            return "No existe el usuario con el id ".concat(idUsuario+"");
         }
 
-        rObj = productoService.obtenerProductoPorId(idProducto);
-        if(!rObj.getSuccessfully()){
-            return rObj;
+        Producto producto = productoService.obtenerProductoPorId(idProducto);
+        if(producto == null){
+            return "No existe el producto con el id ".concat(idProducto+"");
         }
 
         if(unidades <= 0){
-            rObj.setAsNotSuccessfully();
-            rObj.setMsj("Las unidades deben ser mayores a cero");
-            rObj.setObj("");
-            return rObj;
+            return "Las unidades deben ser mayores a cero";
         }
-
-        Producto producto = (Producto) rObj.getObj();
 
         if(producto.getStockProducto() < unidades){
-            rObj.setAsNotSuccessfully();
-            rObj.setMsj("No existen suficientes unidades de ".concat(producto.getNombreProducto()));
-            rObj.setObj("");
-            return rObj;
+            return "No existen suficientes unidades de ".concat(producto.getNombreProducto());
         }
 
-        rObj = carritoCompraService.carritoActual(idUsuario);
-        if(!rObj.getSuccessfully()){
-            rObj = carritoCompraService.crearNuevo(idUsuario);
+        CarritoCompra carritoCompra = carritoCompraService.carritoActual(idUsuario);
+        if(carritoCompra == null){
+            carritoCompra = carritoCompraService.crearNuevo(idUsuario);
         }
 
-        if(rObj.getSuccessfully()){
-            CarritoCompra carritoCompra = (CarritoCompra) rObj.getObj();
+        if(carritoCompra != null){
+            
             CarritoCompraProducto carritoCompraProducto = new CarritoCompraProducto();
 
             carritoCompraProducto.setCarritoCompra(carritoCompra);
             carritoCompraProducto.setProductoCarritoCompra(producto);
             carritoCompraProducto.setUnidadesProducto(unidades);
             
-            rObj = productoService.descontarUnidadesStock(idProducto, producto, unidades);
-            if(rObj.getSuccessfully()){
-                rObj.setAsSuccessfully();
-                rObj.setMsj("Producto agregado al carrito de compras con éxito");
-                rObj.setObj(carritoCompraProductoRepository.save(carritoCompraProducto));
+            if(productoService.descontarUnidadesStock(idProducto, producto, unidades)){
+                carritoCompraProductoRepository.save(carritoCompraProducto);
+                return true;
             }
-            return rObj;
-
+            return null;
         }  
-        return rObj;
+        return null;
     }
 
 }
