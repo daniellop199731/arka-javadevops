@@ -3,10 +3,12 @@ package com.bancolombia.arka_javadevops.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.bancolombia.arka_javadevops.models.MetodoPago;
 import com.bancolombia.arka_javadevops.repositories.MetodoPagoRepository;
+import com.bancolombia.arka_javadevops.utils.ResponseGenericObject;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
@@ -18,45 +20,40 @@ public class MetodoPagoService {
     private final MetodoPagoRepository metodoPagoRepository;
 
     private static ResponseObject rObj;
+    private static ResponseGenericObject<List<MetodoPago>> rgObjList;
+    private static ResponseGenericObject<MetodoPago> rgObj;
 
-    public List<MetodoPago> obtenerMetodosPago(){
-        //rObj = new ResponseObject();
+    public ResponseGenericObject<List<MetodoPago>> obtenerMetodosPago(){
+        rgObjList = new ResponseGenericObject<>();
         List<MetodoPago> metodosPago = (List<MetodoPago>) metodoPagoRepository.findAll();
-        /*if(!metodosPago.isEmpty()){
-            rObj.setMsj("Consulta ejecutada con exito");
-            rObj.setObj(metodosPago);
-            rObj.setAsSuccessfully();  
-            return rObj;        
+        if(!metodosPago.isEmpty()){
+            rgObjList.setAsSuccessfully("Consulta ejecutada con exito", metodosPago);
+            return rgObjList;        
         }
-
-        rObj.setMsj("No hay metodos de pago creados");            
-        rObj.setAsSuccessfully();*/        
-        return metodosPago;
+        rgObjList.setAsNotSuccessfully("No hay metodos de pago creados", HttpStatus.NOT_FOUND);   
+        return rgObjList;
     }
 
-    public ResponseObject obtenerMetodoPagoPorId(int idMetodoPago){
-        rObj = new ResponseObject();
+    public ResponseGenericObject<MetodoPago> obtenerMetodoPagoPorId(int idMetodoPago){
+        rgObj = new ResponseGenericObject<>();
         Optional<MetodoPago> metodoPagoEncontrado = metodoPagoRepository.findById(idMetodoPago);
         if(metodoPagoEncontrado.isPresent()){
-            rObj.setAsSuccessfully();
-            rObj.setMsj("Metodo de pago encontrado");
-            rObj.setObj(metodoPagoEncontrado);
+            rgObj.setAsSuccessfully("Metodo de pago encontrado", metodoPagoEncontrado.get());
         }
-        rObj.setMsj("El metodo de pago con id ".concat(idMetodoPago+"").concat(" no existe"));
-        return rObj;
+        rgObj.setAsNotSuccessfully("El metodo de pago con id ".concat(idMetodoPago+"").concat(" no existe")
+            , HttpStatus.NOT_FOUND);
+        return rgObj;
     }
 
-    public ResponseObject crearNuevo(MetodoPago metodoPago){
-        rObj = new ResponseObject();
+    public ResponseGenericObject<MetodoPago> crearNuevo(MetodoPago metodoPago){
+        rgObj = new ResponseGenericObject<>();
         List<MetodoPago> metodoPagos = metodoPagoRepository.findByNombreMetodoPago(metodoPago.getNombreMetodoPago());
-        if(metodoPagos.isEmpty()){
-            rObj.setObj(metodoPagoRepository.save(metodoPago));
-            rObj.setMsj("Metodo de pago guardado con éxito");
-            rObj.setAsSuccessfully();            
-        }
-        rObj.setMsj("El metodo de pago ".concat(metodoPago.getNombreMetodoPago())
-            .concat(" ya existe"));        
-        return rObj;
+        if(metodoPagos.isEmpty()){            
+            rgObj.setAsSuccessfully("Metodo de pago guardado con éxito", metodoPagoRepository.save(metodoPago));
+            return rgObj;       
+        }       
+        rgObj.setAsNotSuccessfully("El metodo de pago ".concat(metodoPago.getNombreMetodoPago())
+            .concat(" ya existe"), HttpStatus.BAD_REQUEST);
+        return rgObj;
     }
-
 }

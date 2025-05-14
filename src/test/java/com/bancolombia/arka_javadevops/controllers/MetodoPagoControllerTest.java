@@ -2,11 +2,9 @@ package com.bancolombia.arka_javadevops.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.bancolombia.arka_javadevops.models.MetodoPago;
 import com.bancolombia.arka_javadevops.services.MetodoPagoService;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
+import com.bancolombia.arka_javadevops.utils.ResponseGenericObject;
 
 public class MetodoPagoControllerTest {
 
@@ -41,10 +39,23 @@ public class MetodoPagoControllerTest {
 
     @Test
     public void testReturningOrders() {
-       when(metodoPagoController.obtenerMetodosPago())
-             .thenReturn(ResponseEntity.of(Optional.ofNullable(List.of(new MetodoPago(1, "a", null, null)))));
-       ResponseEntity<List<MetodoPago>> responseEntity = metodoPagoController.obtenerMetodosPago();
-       assertEquals(org.springframework.http.HttpStatus.OK, responseEntity.getStatusCode());
+       when(metodoPagoService.obtenerMetodosPago())
+             .thenReturn(
+                new ResponseGenericObject<List<MetodoPago>>(
+                    true
+                    , "msj"
+                    , HttpStatus.OK
+                    , List.of(
+                        new MetodoPago(
+                            1
+                            , "nuevo"
+                            , null, null))));
+       ResponseEntity<ResponseGenericObject<List<MetodoPago>>> responseEntity = metodoPagoController.obtenerMetodosPago();
+       assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+       assertNotNull(responseEntity.getBody());
+       assertEquals(1,  responseEntity.getBody().getObj().size());
+       assertEquals(1, responseEntity.getBody().getObj().get(0).getIdMetodoPago());
+       assertEquals("nuevo", responseEntity.getBody().getObj().get(0).getNombreMetodoPago());
     }
 
 }

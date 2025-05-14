@@ -8,6 +8,7 @@ import com.bancolombia.arka_javadevops.models.MetodoPago;
 import com.bancolombia.arka_javadevops.models.MetodoPagoUsuario;
 import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.repositories.MetodoPagoUsuarioRepository;
+import com.bancolombia.arka_javadevops.utils.ResponseGenericObject;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
@@ -42,8 +43,11 @@ public class MetodoPagoUsuarioService {
         if(!rObj.getSuccessfully()){
             return rObj;
         }
-        rObj = metodoPagoService.obtenerMetodoPagoPorId(idMetodoPago);
-        if(!rObj.getSuccessfully()){
+        ResponseGenericObject<MetodoPago> rgObj = metodoPagoService.obtenerMetodoPagoPorId(idMetodoPago);
+        if(!rgObj.isSuccessfully()){
+            rObj.setSuccessfully(rgObj.isSuccessfully());
+            rObj.setMsj(rgObj.getMsj());
+            rObj.setObj(rgObj.getObj());
             return rObj;
         }   
         if(valorCuenta <= 0){
