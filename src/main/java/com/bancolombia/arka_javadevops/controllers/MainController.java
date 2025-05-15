@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/main")
 public class MainController {
 
-    @GetMapping("/test1")
+    @GetMapping("/")
     public String holaMundo() {
         return "Hola mundo";
     }

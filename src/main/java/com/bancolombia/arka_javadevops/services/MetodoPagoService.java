@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.bancolombia.arka_javadevops.models.MetodoPago;
 import com.bancolombia.arka_javadevops.repositories.MetodoPagoRepository;
 import com.bancolombia.arka_javadevops.utils.ResponseGenericObject;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +18,6 @@ public class MetodoPagoService {
 
     private final MetodoPagoRepository metodoPagoRepository;
 
-    private static ResponseObject rObj;
     private static ResponseGenericObject<List<MetodoPago>> rgObjList;
     private static ResponseGenericObject<MetodoPago> rgObj;
 
@@ -39,6 +37,7 @@ public class MetodoPagoService {
         Optional<MetodoPago> metodoPagoEncontrado = metodoPagoRepository.findById(idMetodoPago);
         if(metodoPagoEncontrado.isPresent()){
             rgObj.setAsSuccessfully("Metodo de pago encontrado", metodoPagoEncontrado.get());
+            return rgObj;
         }
         rgObj.setAsNotSuccessfully("El metodo de pago con id ".concat(idMetodoPago+"").concat(" no existe")
             , HttpStatus.NOT_FOUND);
@@ -49,7 +48,7 @@ public class MetodoPagoService {
         rgObj = new ResponseGenericObject<>();
         List<MetodoPago> metodoPagos = metodoPagoRepository.findByNombreMetodoPago(metodoPago.getNombreMetodoPago());
         if(metodoPagos.isEmpty()){            
-            rgObj.setAsSuccessfully("Metodo de pago guardado con éxito", metodoPagoRepository.save(metodoPago));
+            rgObj.setAsSuccessfully("Metodo de pago guardado con éxito", HttpStatus.CREATED, metodoPagoRepository.save(metodoPago));
             return rgObj;       
         }       
         rgObj.setAsNotSuccessfully("El metodo de pago ".concat(metodoPago.getNombreMetodoPago())

@@ -12,9 +12,45 @@ public class PruebaControlador {
     @Autowired
     private MainController mainController;
 
+    @Autowired
+    private PerfilController perfilController;
+
+    @Autowired
+    private UsuarioController usuarioController;
+
+    @Autowired
+    private MetodoPagoUsuarioController metodoPagoUsuarioController;
+
+    @Autowired
+    private MetodoPagoController metodoPagoController;
+
+    @Autowired 
+    private CategoriaController categoriaController;
+
+    @Autowired
+    private ProveedorController proveedorController;
+
+    @Autowired
+    private ProductoController productoController;
+
+    @Autowired
+    private CarritoCompraProductoController carritoCompraProductoController;
+
+    @Autowired
+    private CarritoCompraController carritoCompraController;
+
     @Test
-    public void probarMainController(){
+    public void probarControllers(){
         assertNotNull(mainController);
+        assertNotNull(perfilController);
+        assertNotNull(usuarioController);
+        assertNotNull(metodoPagoUsuarioController);
+        assertNotNull(metodoPagoController);
+        assertNotNull(categoriaController);
+        assertNotNull(proveedorController);
+        assertNotNull(productoController);
+        assertNotNull(carritoCompraProductoController);
+        assertNotNull(carritoCompraController);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.bancolombia.arka_javadevops.service;
+package com.bancolombia.arka_javadevops.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
