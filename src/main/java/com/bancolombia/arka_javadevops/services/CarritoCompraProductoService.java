@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
 import com.bancolombia.arka_javadevops.models.CarritoCompra;
 import com.bancolombia.arka_javadevops.models.CarritoCompraProducto;
 import com.bancolombia.arka_javadevops.models.Producto;
 import com.bancolombia.arka_javadevops.repositories.CarritoCompraProductoRepository;
+import com.bancolombia.arka_javadevops.utils.ResponseGenericObject;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class CarritoCompraProductoService {
     private final CarritoCompraService carritoCompraService;
 
     private static ResponseObject rObj;
+    private static ResponseGenericObject<UsuarioDTO> rgObjUsuarioDto;
 
     public ResponseObject obtenerProductosCarrito(int idCarrito){
         rObj = new ResponseObject();
@@ -57,8 +60,8 @@ public class CarritoCompraProductoService {
     }
 
     public ResponseObject agregarProductoCarrito(int idUsuario, int idProducto, int unidades){
-        rObj = usuarioService.obtenerUsuarioPorId(idUsuario);
-        if(!rObj.getSuccessfully()){
+        rgObjUsuarioDto = usuarioService.obtenerUsuarioPorId(idUsuario);
+        if(!rgObjUsuarioDto.isSuccessfully()){
             return rObj;
         }
 

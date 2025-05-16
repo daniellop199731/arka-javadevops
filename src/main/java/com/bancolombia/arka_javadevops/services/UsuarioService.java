@@ -5,9 +5,12 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
 import com.bancolombia.arka_javadevops.mappers.UsuarioMapper;
+import com.bancolombia.arka_javadevops.models.MetodoPago;
 import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.repositories.UsuarioRepository;
+import com.bancolombia.arka_javadevops.utils.ResponseGenericObject;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,9 @@ public class UsuarioService {
     private final UsuarioMapper usuarioMapper;
 
     private static ResponseObject rObj;
+    private static ResponseGenericObject<List<UsuarioDTO>> rgObjList;
+    private static ResponseGenericObject<UsuarioDTO> rgObjDto;
+    private static ResponseGenericObject<Usuario> rgObj;
 
     /* @RequiredArgsConstructor //Reemplaza el constructor
         La etiqueta lo que hara es que a todos los atributos con final, lo tendra encuenta
@@ -32,33 +38,39 @@ public class UsuarioService {
     }
     */    
 
-    public ResponseObject obtenerUsuarios(){
-        rObj = new ResponseObject();
-        rObj.setAsSuccessfully();
-        rObj.setMsj("Consulta ejecutada con exito");        
-        rObj.setObj(usuarioMapper.toDto((List<Usuario>) usuarioRepository.findAll()));
-        return rObj;
+    public ResponseGenericObject<List<UsuarioDTO>> obtenerUsuarios(){
+        rgObjList = new ResponseGenericObject<>();
+        List<Usuario> usuarios = (List<Usuario>) usuarioRepository.findAll();
+        if(usuarios.isEmpty()){
+            rgObjList.setAsNotSuccessfully("No hay usuarios creados");
+            return rgObjList;
+        }
+        rgObjList.setAsSuccessfully("Consulta ejecutada con exito"
+            , usuarioMapper.toDto(usuarios));
+        return rgObjList;
     }
 
-    public ResponseObject obtenerUsuariosPorOrdenNombres(){
-        rObj = new ResponseObject();
-        rObj.setAsSuccessfully();
-        rObj.setMsj("Consulta ejecutada con exito");
-        rObj.setObj(usuarioMapper.toDto(usuarioRepository.usuariosOrderByNombres()));
-        return rObj;
+    public ResponseGenericObject<List<UsuarioDTO>> obtenerUsuariosPorOrdenNombres(){
+        rgObjList = new ResponseGenericObject<>();
+        List<Usuario> usuarios = (List<Usuario>) usuarioRepository.usuariosOrderByNombres();
+        if(usuarios.isEmpty()){
+            rgObjList.setAsNotSuccessfully("No hay usuarios creados");
+            return rgObjList;
+        }
+        rgObjList.setAsSuccessfully("Consulta ejecutada con exito"
+            , usuarioMapper.toDto(usuarios));
+        return rgObjList;
     }
 
-    public ResponseObject obtenerUsuarioPorId(int idUsuario){
-        rObj = new ResponseObject();
+    public ResponseGenericObject<UsuarioDTO> obtenerUsuarioPorId(int idUsuario){
+        rgObjDto = new ResponseGenericObject<>();
         Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
         if(usuario.isPresent()){
-            rObj.setObj(usuarioMapper.toDto(usuario.get()));
-            rObj.setMsj("Usuario encontrado");
-            rObj.setAsSuccessfully();
-        } else {
-            rObj.setMsj("El usuario con id ".concat(idUsuario+"").concat(" no existe"));
+            rgObjDto.setAsSuccessfully("Usuario encontrado", usuarioMapper.toDto(usuario.get()));
+            return rgObjDto;
         }
-        return rObj;
+        rgObjDto.setAsNotSuccessfully("El usuario con id ".concat(idUsuario+"").concat(" no existe"));
+        return rgObjDto;
     }
 
     public ResponseObject obtenerUsuarioPorIdWitOutDto(int idUsuario){
@@ -74,30 +86,26 @@ public class UsuarioService {
         return rObj;
     }    
 
-    public ResponseObject crearNuevoUsuario(Usuario usuario){
-        rObj = new ResponseObject();
-        boolean continueToSave = true;
-        if(this.existeUsuarioPorIdentificacion(usuario.getIdentificacionUsuario())){            
-            rObj.setMsj("El usuario con la identificacion "
-                .concat(usuario.getIdentificacionUsuario()).concat(" ya existe en el sistema"));            
-                continueToSave = false;
+    public ResponseGenericObject<UsuarioDTO> crearNuevoUsuario(Usuario usuario){
+        rgObjDto = new ResponseGenericObject<>();
+        if(this.existeUsuarioPorIdentificacion(usuario.getIdentificacionUsuario())){    
+            rgObjDto.setAsNotSuccessfully(
+                "El usuario con la identificacion "
+                .concat(usuario.getIdentificacionUsuario()).concat(" ya existe en el sistema")
+            );            
+            return rgObjDto;
         } 
-
-        if(continueToSave){
-            /**
-             * LOGICA ANTES DE GUARDAR EN BASE DE DATOS, AQUI
-             * ...
-             */           
-            usuarioRepository.save(usuario);
-            rObj.setObj(usuarioMapper.toDto(usuario));
-            rObj.setMsj("Usuario creado con exito");
-            rObj.setAsSuccessfully();
-        }
-        return rObj; 
+        
+        /**
+         * LOGICA ANTES DE GUARDAR EN BASE DE DATOS, AQUI
+         * ...
+         */      
+        rgObjDto.setAsSuccessfully("Usuario creado con exito", usuarioMapper.toDto(usuarioRepository.save(usuario)));
+        return rgObjDto; 
     }
 
-    public ResponseObject actualizarUsuario(int idUsuario,Usuario usuario){
-        rObj = new ResponseObject();
+    public ResponseGenericObject<UsuarioDTO> actualizarUsuario(int idUsuario,Usuario usuario){
+        rgObjDto = new ResponseGenericObject<>();
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(idUsuario);
         if(usuarioEncontrado.isPresent()){            
             /**
@@ -105,67 +113,54 @@ public class UsuarioService {
             */
             usuario.setIdUsuario(idUsuario);    
             if(this.existeUsuarioPorIdentificacionParaActualizar(usuario)){
-                rObj.setMsj("Ya existe un usuario con la identificacion ".concat(usuario.getIdentificacionUsuario()));
-                rObj.setObj("");
-                return rObj;           
+                rgObjDto.setAsNotSuccessfully("Ya existe un usuario con la identificacion ".concat(usuario.getIdentificacionUsuario()));
+                return rgObjDto;           
             }                    
-            /**/            
-            usuarioRepository.save(usuario);
-            rObj.setObj(usuarioMapper.toDto(usuario));
-            rObj.setMsj("Usuario actualizado con exito");
-            rObj.setAsSuccessfully(); 
-            return rObj;               
+            /**/   
+            rgObjDto.setAsSuccessfully("Usuario actualizado con exito", usuarioMapper.toDto(usuarioRepository.save(usuario)));
+            return rgObjDto;               
         } 
-        
-        rObj.setMsj("El usuario con el ID ".concat(idUsuario+"").concat(" no existe"));
-        return rObj;
+        rgObjDto.setAsNotSuccessfully("El usuario con el ID ".concat(idUsuario+"").concat(" no existe"));
+        return rgObjDto;
     }    
 
-    public ResponseObject eliminarUsuarioPorId(int idUsuario){
-        rObj = new ResponseObject();
+    public ResponseGenericObject<UsuarioDTO> eliminarUsuarioPorId(int idUsuario){
+        rgObjDto = new ResponseGenericObject<>();
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(idUsuario);        
         if(usuarioEncontrado.isPresent()){
             /**
              * LOGICA ANTES DE ELIMINAR EN BASE DE DATOS, AQUI
              * ...
-             */            
+             */     
             usuarioRepository.deleteById(idUsuario);
-            rObj.setObj(usuarioMapper.toDto(usuarioEncontrado.get()));
-            rObj.setMsj("Usuario eliminado con exito");
-            rObj.setAsSuccessfully();
-            return rObj;
+            rgObjDto.setAsSuccessfully("Usuario eliminado con exito", usuarioMapper.toDto(usuarioEncontrado.get()));
+            return rgObjDto;
         }
-        rObj.setMsj("El usuario con el ID ".concat(idUsuario+"").concat(" no existe"));
-        return rObj;
+        rgObjDto.setAsNotSuccessfully("El usuario con el ID ".concat(idUsuario+"").concat(" no existe"));
+        return rgObjDto;
         
     }
 
-    public ResponseObject obtenerUsuariosPorNombres(String nombresuString){
-        rObj = new ResponseObject();
+    public ResponseGenericObject<List<UsuarioDTO>> obtenerUsuariosPorNombres(String nombresuString){
+        rgObjList = new ResponseGenericObject<>();
         List<Usuario> usuarios = usuarioRepository.findByNombresUsuario(nombresuString);
-        if(usuarios.size() > 0){
-            rObj.setObj(usuarioMapper.toDto(usuarios));
-            rObj.setMsj("Usuarios encontrados");
-            rObj.setAsSuccessfully();
-        } else {
-            rObj.setMsj("De momento no existen usuarios");
-            rObj.setAsSuccessfully();
+        if(usuarios.isEmpty()){
+            rgObjList.setAsNotSuccessfully("De momento no existen usuarios");
+            return rgObjList;
         }
-        return rObj;
+        rgObjList.setAsSuccessfully("Consulta ejecutada con exito", usuarioMapper.toDto(usuarios));
+        return rgObjList;
     }
 
-    public ResponseObject obtenerUsuarioPorIdentificacion(String identificacionUsuario){
-        rObj = new ResponseObject();
+    public ResponseGenericObject<UsuarioDTO> obtenerUsuarioPorIdentificacion(String identificacionUsuario){
+        rgObjDto = new ResponseGenericObject<>();
         Usuario usuario = usuarioRepository.findByIdentificacionUsuario(identificacionUsuario);
         if(usuario != null){
-            rObj.setObj(usuarioMapper.toDto(usuario));
-            rObj.setMsj("Usuario encontrado");
-            rObj.setAsSuccessfully();
-        } else {
-            rObj.setMsj("No existe usuario con identificacion ".concat(identificacionUsuario));
-            rObj.setAsSuccessfully();
+            rgObjDto.setAsSuccessfully("Usuario encontrado", usuarioMapper.toDto(usuario));
+            return rgObjDto;
         }
-        return rObj;
+        rgObjDto.setAsNotSuccessfully("No existe usuario con identificacion ".concat(identificacionUsuario));
+        return rgObjDto;
     }
 
     //////////////////////////////////////

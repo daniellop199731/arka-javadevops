@@ -1,11 +1,16 @@
 package com.bancolombia.arka_javadevops.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,13 +38,11 @@ public class MetodoPagoServiceTest {
 
     @Test
     public void testObtenerMetodosPagoDevuelveObjetos(){
-        MetodoPago metodoPago = new MetodoPago(1, "Metodo1", null, null);
-
         /*
             Practicamente lo que se quiere decir es que  findAll() de MetodoPagoRepository me va a devolver lo que yo le 
             indique en thenReturn
         */
-        when(metodoPagoRepository.findAll()).thenReturn(List.of(metodoPago));
+        when(metodoPagoRepository.findAll()).thenReturn(List.of(new MetodoPago(1, "Metodo1", null, null)));
 
         /* 
             Como tal si se ejecuta en realidad obtenerMetodosPago de MetodoPagoService, pero como este depdende de lo que 
@@ -67,5 +70,53 @@ public class MetodoPagoServiceTest {
         assertEquals("No hay metodos de pago creados", rgObj.getMsj());
         assertNull(rgObj.getObj());
     }
+
+    @Test
+    public void testObtenerMetodoPagoConIdConRegistro(){
+        when(metodoPagoRepository.findById(1))
+            .thenReturn(Optional.of(new MetodoPago(1, "nuevo", null, null)));
+        ResponseGenericObject<MetodoPago> response = metodoPagoService.obtenerMetodoPagoPorId(1);
+        assertNotNull(response);
+        assertTrue(response.isSuccessfully());
+        assertEquals("Metodo de pago encontrado", response.getMsj());
+        assertNotNull(response.getObj());
+    }
+
+    @Test
+    public void testObtenerMetodoPagoConIdSinRegistro(){
+        when(metodoPagoRepository.findById(1))
+            .thenReturn(Optional.ofNullable(null));
+        ResponseGenericObject<MetodoPago> response = metodoPagoService.obtenerMetodoPagoPorId(1);
+        assertNotNull(response);
+        assertFalse(response.isSuccessfully());
+        assertEquals("El metodo de pago con id ".concat(1+"").concat(" no existe"), response.getMsj());
+        assertNull(response.getObj());
+    }    
+
+    @Test
+    public void testCrearNuevoExitoso(){
+        when(metodoPagoRepository.save(any()))
+            .thenReturn(new MetodoPago(1, "Metodo1", null, null));
+        ResponseGenericObject<MetodoPago> response = metodoPagoService.crearNuevo(new MetodoPago(0, "Metodo1", null, null));
+        assertNotNull(response);
+        assertTrue(response.isSuccessfully());
+        assertEquals("Metodo de pago guardado con éxito", response.getMsj());
+        assertNotNull(response.getObj());
+        assertNotEquals(0, response.getObj().getIdMetodoPago());
+        assertEquals("Metodo1", response.getObj().getNombreMetodoPago());
+    }
+
+    @Test
+    public void testCrearNuevoNoExitoso(){
+        when(metodoPagoRepository.save(any()))
+            .thenReturn(new MetodoPago(1, "Metodo1", null, null));
+        when(metodoPagoRepository.findByNombreMetodoPago("Metodo1"))
+            .thenReturn(List.of(new MetodoPago(0, "Metodo1", null, null)));
+        ResponseGenericObject<MetodoPago> response = metodoPagoService.crearNuevo(new MetodoPago(0, "Metodo1", null, null));
+        assertNotNull(response);
+        assertFalse(response.isSuccessfully());
+        assertEquals("El metodo de pago ".concat("Metodo1").concat(" ya existe"), response.getMsj());
+        assertNull(response.getObj());
+    }    
 
 }

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,21 +29,31 @@ public class MetodoPagoController {
     @GetMapping("")
     public ResponseEntity<ResponseGenericObject<List<MetodoPago>>> 
         obtenerMetodosPago() {
-            ResponseGenericObject<List<MetodoPago>> obj = metodoPagoService.obtenerMetodosPago();
-            return new ResponseEntity<>(obj, obj.getHttpStatus());
+            ResponseGenericObject<List<MetodoPago>> response = metodoPagoService.obtenerMetodosPago();
+            if(response.getObj().isEmpty()){
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{idMetodoPago}")
     public ResponseEntity<ResponseGenericObject<MetodoPago>> 
         obtenerMetodoPagoPorId(@PathVariable int idMetodoPago) {
             ResponseGenericObject<MetodoPago> response = metodoPagoService.obtenerMetodoPagoPorId(idMetodoPago);
-            return new ResponseEntity<>(response, response.getHttpStatus());         
+            if(response.getObj() == null){
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);         
     }
 
     @PostMapping("/crearNuevo")
     public ResponseEntity<ResponseGenericObject<MetodoPago>> crearNuevo(@Valid @RequestBody MetodoPago metodoPago) {
         ResponseGenericObject<MetodoPago> response = metodoPagoService.crearNuevo(metodoPago);
-        return new ResponseEntity<>(response, response.getHttpStatus());
+        if(response.getObj() == null){
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     
     

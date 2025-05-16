@@ -3,7 +3,6 @@ package com.bancolombia.arka_javadevops.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.bancolombia.arka_javadevops.models.MetodoPago;
@@ -28,7 +27,7 @@ public class MetodoPagoService {
             rgObjList.setAsSuccessfully("Consulta ejecutada con exito", metodosPago);
             return rgObjList;        
         }
-        rgObjList.setAsNotSuccessfully("No hay metodos de pago creados", HttpStatus.NOT_FOUND);   
+        rgObjList.setAsNotSuccessfully("No hay metodos de pago creados");   
         return rgObjList;
     }
 
@@ -39,8 +38,7 @@ public class MetodoPagoService {
             rgObj.setAsSuccessfully("Metodo de pago encontrado", metodoPagoEncontrado.get());
             return rgObj;
         }
-        rgObj.setAsNotSuccessfully("El metodo de pago con id ".concat(idMetodoPago+"").concat(" no existe")
-            , HttpStatus.NOT_FOUND);
+        rgObj.setAsNotSuccessfully("El metodo de pago con id ".concat(idMetodoPago+"").concat(" no existe"));
         return rgObj;
     }
 
@@ -48,11 +46,10 @@ public class MetodoPagoService {
         rgObj = new ResponseGenericObject<>();
         List<MetodoPago> metodoPagos = metodoPagoRepository.findByNombreMetodoPago(metodoPago.getNombreMetodoPago());
         if(metodoPagos.isEmpty()){            
-            rgObj.setAsSuccessfully("Metodo de pago guardado con éxito", HttpStatus.CREATED, metodoPagoRepository.save(metodoPago));
+            rgObj.setAsSuccessfully("Metodo de pago guardado con éxito", metodoPagoRepository.save(metodoPago));
             return rgObj;       
         }       
-        rgObj.setAsNotSuccessfully("El metodo de pago ".concat(metodoPago.getNombreMetodoPago())
-            .concat(" ya existe"), HttpStatus.BAD_REQUEST);
+        rgObj.setAsNotSuccessfully("El metodo de pago ".concat(metodoPago.getNombreMetodoPago()).concat(" ya existe"));
         return rgObj;
     }
 }

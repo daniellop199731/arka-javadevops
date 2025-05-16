@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
 import com.bancolombia.arka_javadevops.models.MetodoPago;
 import com.bancolombia.arka_javadevops.models.MetodoPagoUsuario;
 import com.bancolombia.arka_javadevops.models.Usuario;
@@ -22,6 +23,7 @@ public class MetodoPagoUsuarioService {
     private final MetodoPagoService metodoPagoService;
 
     private static ResponseObject rObj;
+    private static ResponseGenericObject<UsuarioDTO> rgObjUsuarioDto;
 
     public ResponseObject obtenerMetodosPagosUsuario(int idUsuario){
         rObj = new ResponseObject();
@@ -39,8 +41,8 @@ public class MetodoPagoUsuarioService {
     }
 
     public ResponseObject agregarMetodoPagoUsuario(int idUsuario, int idMetodoPago, double valorCuenta){
-        rObj = usuarioService.obtenerUsuarioPorId(idUsuario);
-        if(!rObj.getSuccessfully()){
+        rgObjUsuarioDto = usuarioService.obtenerUsuarioPorId(idUsuario);
+        if(!rgObjUsuarioDto.isSuccessfully()){
             return rObj;
         }
         ResponseGenericObject<MetodoPago> rgObj = metodoPagoService.obtenerMetodoPagoPorId(idMetodoPago);

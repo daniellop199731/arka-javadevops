@@ -3,12 +3,16 @@ package com.bancolombia.arka_javadevops.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
 import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.services.UsuarioService;
+import com.bancolombia.arka_javadevops.utils.ResponseGenericObject;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,57 +35,79 @@ public class UsuarioController {
     private static ResponseObject rObj;
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> obtenerUsuarios() {        
-        return new ResponseEntity<>(usuarioService.obtenerUsuarios(), HttpStatus.OK);
+    public ResponseEntity<ResponseGenericObject<List<UsuarioDTO>>> obtenerUsuarios() {     
+        ResponseGenericObject<List<UsuarioDTO>> response = usuarioService.obtenerUsuarios();
+        if(response.isSuccessfully()){
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } 
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<ResponseObject> obtenerUsuarioPorId(@PathVariable int idUsuario){
-        return new ResponseEntity<>(usuarioService.obtenerUsuarioPorId(idUsuario), HttpStatus.OK);    
+    public ResponseEntity<ResponseGenericObject<UsuarioDTO>> obtenerUsuarioPorId(@PathVariable int idUsuario){
+        ResponseGenericObject<UsuarioDTO> response = usuarioService.obtenerUsuarioPorId(idUsuario);
+        if(response.isSuccessfully()){
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);    
     }
 
     //Define una ruta qye permita buscar y devolver una lista de usuarios filtrados por su nombre
     @GetMapping("/busquedaPorNombre")
-    public ResponseEntity<ResponseObject> obtenerUsuariosPorNombre(@RequestParam(value = "nombresUsuario", required = true) String nombreUsuario) {
-        return new ResponseEntity<>(usuarioService.obtenerUsuariosPorNombres(nombreUsuario), HttpStatus.OK);      
+    public ResponseEntity<ResponseGenericObject<List<UsuarioDTO>>> obtenerUsuariosPorNombre(
+        @RequestParam(required = true) String nombreUsuario) {
+            ResponseGenericObject<List<UsuarioDTO>> response = usuarioService.obtenerUsuariosPorNombres(nombreUsuario);
+            if(response.isSuccessfully()){
+                return new ResponseEntity<>(response, HttpStatus.OK);      
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     //Define una ruta que te devuelva la lista de todos los usuarios ordenados alfabéticamente
     @GetMapping("/obtenerUsuariosPorOrdenNombres")
-    public ResponseEntity<ResponseObject> obtenerUsuariosPorOrdenNombres(){
-        return new ResponseEntity<>(usuarioService.obtenerUsuariosPorOrdenNombres(), HttpStatus.OK);
+    public ResponseEntity<ResponseGenericObject<List<UsuarioDTO>>> obtenerUsuariosPorOrdenNombres(){
+    ResponseGenericObject<List<UsuarioDTO>> response = usuarioService.obtenerUsuariosPorOrdenNombres();
+    if(response.isSuccessfully()){
+        return new ResponseEntity<>(response, HttpStatus.OK);      
+    }
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/busquedaPorIdentificacion")
-    public ResponseEntity<ResponseObject> obtenerUsuarioPorIdentificacion(@RequestParam(required = true) String identificacionUsuario) {
-        return new ResponseEntity<>(
-            usuarioService.obtenerUsuarioPorIdentificacion(identificacionUsuario), HttpStatus.OK);
+    public ResponseEntity<ResponseGenericObject<UsuarioDTO>> 
+        obtenerUsuarioPorIdentificacion(@RequestParam(required = true) String identificacionUsuario) {
+            ResponseGenericObject<UsuarioDTO> response = usuarioService.obtenerUsuarioPorIdentificacion(identificacionUsuario);
+            if(response.isSuccessfully()){
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }        
 
     @PostMapping("/crearNuevo")
-    public ResponseEntity<ResponseObject> crearNuevoUsuario(@Valid @RequestBody Usuario usuario) {
-        return new ResponseEntity<>(usuarioService.crearNuevoUsuario(usuario), HttpStatus.CREATED);
+    public ResponseEntity<ResponseGenericObject<UsuarioDTO>> crearNuevoUsuario(@Valid @RequestBody Usuario usuario) {
+        ResponseGenericObject<UsuarioDTO> response = usuarioService.crearNuevoUsuario(usuario);
+        if(response.isSuccessfully()){
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/actualizarUsuario/{idUsuario}")
-    public ResponseEntity<ResponseObject> putMethodName(@PathVariable int idUsuario, @Valid @RequestBody Usuario usuario) {    
-        rObj = usuarioService.actualizarUsuario(idUsuario, usuario);
-        if(rObj.getObj() == null){
-            return new ResponseEntity<>(rObj, HttpStatus.NOT_FOUND);
-        } 
-        if(!rObj.getSuccessfully()){
-            return new ResponseEntity<>(rObj, HttpStatus.CONFLICT);
+    public ResponseEntity<ResponseGenericObject<UsuarioDTO>> actualizar(@PathVariable int idUsuario, @Valid @RequestBody Usuario usuario) {    
+        ResponseGenericObject<UsuarioDTO> response = usuarioService.actualizarUsuario(idUsuario, usuario);
+        if(response.isSuccessfully()){
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        return new ResponseEntity<>(rObj, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @DeleteMapping("/eliminar/{idUsuario}")
-    public ResponseEntity<ResponseObject> eliminarUsuarioPorId(@PathVariable(required = true) int idUsuario){
-        rObj = usuarioService.eliminarUsuarioPorId(idUsuario);
-        if(rObj.getObj() == null){
-            return new ResponseEntity<>(rObj, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ResponseGenericObject<UsuarioDTO>> eliminarUsuarioPorId(@PathVariable(required = true) int idUsuario){
+        ResponseGenericObject<UsuarioDTO> response = usuarioService.eliminarUsuarioPorId(idUsuario);
+        if(response.isSuccessfully()){
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        return new ResponseEntity<>(rObj, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
              
     }   
 }
