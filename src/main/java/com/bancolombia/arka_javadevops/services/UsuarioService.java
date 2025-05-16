@@ -1,10 +1,12 @@
 package com.bancolombia.arka_javadevops.services;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.bancolombia.arka_javadevops.DTO.ExpirableUsuarioDTO;
 import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
 import com.bancolombia.arka_javadevops.mappers.UsuarioMapper;
 import com.bancolombia.arka_javadevops.models.Usuario;
@@ -86,7 +88,20 @@ public class UsuarioService {
 
     public ResponseGenericObject<UsuarioDTO> crearNuevoUsuario(UsuarioDTO usuarioDto){
         rgObjDto = new ResponseGenericObject<>();
-        Usuario usuario = usuarioMapper.usuarioDtoToUsuario(usuarioDto);
+        //PASO 4: Validar cual DTO se recibe de la peticion para saber si el DTO, se convierte a ExpirableUsuario o a Usuario.
+        Usuario usuario = null;
+        if(usuarioDto instanceof ExpirableUsuarioDTO){
+            //Si entra aqui quiere decir que en la peticion se recibio el campo fechaExpiracion
+            usuario = usuarioMapper.ExpirableUsuarioDtoToUsuario(usuarioDto);
+        } else {
+            //Si entra aqui quiere decir que en la peticion no se recibio el campo fechaExpiracion
+            usuario = usuarioMapper.usuarioDtoToUsuario(usuarioDto);
+        } 
+        
+        /**
+         * LOGICA ANTES DE GUARDAR EN BASE DE DATOS, AQUI
+         * ...
+         */
         if(this.existeUsuarioPorIdentificacion(usuario.getIdentificacionUsuario())){    
             rgObjDto.setAsNotSuccessfully(
                 "El usuario con la identificacion "
@@ -94,11 +109,7 @@ public class UsuarioService {
             );            
             return rgObjDto;
         } 
-        
-        /**
-         * LOGICA ANTES DE GUARDAR EN BASE DE DATOS, AQUI
-         * ...
-         */      
+         /**/      
         rgObjDto.setAsSuccessfully("Usuario creado con exito", usuarioMapper.usuarioToUsuarioDTO(usuarioRepository.save(usuario)));
         return rgObjDto; 
     }

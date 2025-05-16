@@ -86,7 +86,7 @@ public class UsuarioController {
         if(response.isSuccessfully()){
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/actualizarUsuario/{idUsuario}")
