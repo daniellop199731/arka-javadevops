@@ -7,7 +7,6 @@ import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
 import com.bancolombia.arka_javadevops.models.Usuario;
 import com.bancolombia.arka_javadevops.services.UsuarioService;
 import com.bancolombia.arka_javadevops.utils.ResponseGenericObject;
-import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-
-    private static ResponseObject rObj;
 
     @GetMapping("")
     public ResponseEntity<ResponseGenericObject<List<UsuarioDTO>>> obtenerUsuarios() {     
@@ -84,7 +81,7 @@ public class UsuarioController {
     }        
 
     @PostMapping("/crearNuevo")
-    public ResponseEntity<ResponseGenericObject<UsuarioDTO>> crearNuevoUsuario(@Valid @RequestBody Usuario usuario) {
+    public ResponseEntity<ResponseGenericObject<UsuarioDTO>> crearNuevoUsuario(@Valid @RequestBody UsuarioDTO usuario) {
         ResponseGenericObject<UsuarioDTO> response = usuarioService.crearNuevoUsuario(usuario);
         if(response.isSuccessfully()){
             return new ResponseEntity<>(response, HttpStatus.CREATED);

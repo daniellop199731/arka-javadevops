@@ -84,8 +84,8 @@ public class UsuarioControllerMvcTest {
             .thenReturn(new ResponseGenericObject<List<UsuarioDTO>>(
                 true, "msj"
                 , List.of(
-                    new UsuarioDTO("123", "correo", "nombres"
-                    , "apellidos", "direcciones", null))
+                    new UsuarioDTO("123", "correo@correo.com", "nombres"
+                    , "apellidos"))
             ));
         MvcResult result = 
             this.mockMvc.perform(get("/usuarios/busquedaPorNombre?nombreUsuario=nombres"))
@@ -116,7 +116,7 @@ public class UsuarioControllerMvcTest {
                 true, "msj"
                 , List.of(
                     new UsuarioDTO("123", "correo", "nombres"
-                    , "apellidos", "direcciones", null))
+                    , "apellidos"))
             ));
         MvcResult result = 
             this.mockMvc.perform(get("/usuarios/obtenerUsuariosPorOrdenNombres"))
@@ -145,7 +145,7 @@ public class UsuarioControllerMvcTest {
         when(usuarioService.obtenerUsuarioPorIdentificacion("123"))
             .thenReturn(new ResponseGenericObject<UsuarioDTO>(
                 true, "msj", new UsuarioDTO("123", "correo", "nombres"
-                    , "apellidos", "direcciones", null)
+                    , "apellidos")
             ));
         MvcResult result =
         this.mockMvc.perform(get("/usuarios/busquedaPorIdentificacion?identificacionUsuario=123"))
@@ -175,7 +175,7 @@ public class UsuarioControllerMvcTest {
             .thenReturn(new ResponseGenericObject<UsuarioDTO>(
                 true, "msj"
                 , new UsuarioDTO("123123123", "correo@correo.com", "nombres"
-                    , "apellidos", "direccion", null)
+                    , "apellidos")
             ));
 
         String requestBody = new ObjectMapper().writeValueAsString(
@@ -224,7 +224,7 @@ public class UsuarioControllerMvcTest {
             , null, null) ))
             .thenReturn(new ResponseGenericObject<UsuarioDTO>(
                 true, "msj", new UsuarioDTO("123123123", "correo@correo.com", "nombres"
-                    , "apellidos", "direccion", null)
+                    , "apellidos")
             ));
 
         String requestBody = new ObjectMapper().writeValueAsString(
@@ -271,7 +271,7 @@ public class UsuarioControllerMvcTest {
         when(usuarioService.eliminarUsuarioPorId(1))
             .thenReturn(new ResponseGenericObject<UsuarioDTO>(
                 true, "msj", new UsuarioDTO("123123123", "correo@correo.com", "nombres"
-                    , "apellidos", "direccion", null)
+                    , "apellidos")
             ));
 
         MvcResult result = 

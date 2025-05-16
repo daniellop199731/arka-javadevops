@@ -1,6 +1,28 @@
 package com.bancolombia.arka_javadevops.mappers;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import org.mapstruct.InheritInverseConfiguration;
+import org.mapstruct.Mapper;
+
+import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
+import com.bancolombia.arka_javadevops.models.Usuario;
+
+/// Ejemplo de mapper automatico
+@Mapper(componentModel = "spring")
+public interface UsuarioMapper {
+
+    UsuarioDTO usuarioToUsuarioDTO(Usuario usuario);
+
+    List<UsuarioDTO> usuariosToUsuariosDto(List<Usuario> usuarios);
+
+    @InheritInverseConfiguration
+    Usuario usuarioDtoToUsuario (UsuarioDTO usuarioDTO);
+    
+}
+
+/// Ejemplo de mapper manual
+/*import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -34,4 +56,4 @@ public class UsuarioMapper {
         return usuariosDTO;
     }
 
-}
+}*/

@@ -56,18 +56,12 @@ public class Usuario {
     @Size(min = 5, max = 45)
     private String apellidosUsuario;
 
-    @NotNull(message = "Debe proporcionar una direccion de despacho")
-    @NotBlank(message = "Debe proporcionar una direccion de despacho")
     private String direccionDespachoUsuario;
 
-    @NotNull(message = "Debe proporcionar una contraseña")
-    @NotBlank(message = "Debe proporcionar una contraseña")
-    @Size(min = 8, max = 45, message = "La contraseña debe tener entre 8 y 45 caracteres")
     private String contrasennaUsuario;
 
     private String nicknameUsuario;
 
-    @NotNull(message = "Debe proporcionar un perfil valido")
     @ManyToOne
     @JoinColumn(name = "idPerfilUsuario")
     private Perfil perfil;
