@@ -1,5 +1,7 @@
 package com.bancolombia.arka_javadevops.DTO;
 
+import java.util.Date;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,5 +34,7 @@ public class UsuarioDTO {
     @NotBlank(message = "Debe proporcionar los apellidos")   
     @Size(min = 5, max = 45)
     private String apellidosUsuario;
+
+    private Date fechaExpiracion;
 
 }

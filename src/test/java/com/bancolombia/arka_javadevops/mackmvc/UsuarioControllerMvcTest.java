@@ -85,7 +85,7 @@ public class UsuarioControllerMvcTest {
                 true, "msj"
                 , List.of(
                     new UsuarioDTO("123", "correo@correo.com", "nombres"
-                    , "apellidos"))
+                    , "apellidos", null))
             ));
         MvcResult result = 
             this.mockMvc.perform(get("/usuarios/busquedaPorNombre?nombreUsuario=nombres"))
@@ -116,7 +116,7 @@ public class UsuarioControllerMvcTest {
                 true, "msj"
                 , List.of(
                     new UsuarioDTO("123", "correo", "nombres"
-                    , "apellidos"))
+                    , "apellidos", null))
             ));
         MvcResult result = 
             this.mockMvc.perform(get("/usuarios/obtenerUsuariosPorOrdenNombres"))
@@ -145,7 +145,7 @@ public class UsuarioControllerMvcTest {
         when(usuarioService.obtenerUsuarioPorIdentificacion("123"))
             .thenReturn(new ResponseGenericObject<UsuarioDTO>(
                 true, "msj", new UsuarioDTO("123", "correo", "nombres"
-                    , "apellidos")
+                    , "apellidos", null)
             ));
         MvcResult result =
         this.mockMvc.perform(get("/usuarios/busquedaPorIdentificacion?identificacionUsuario=123"))
@@ -175,13 +175,13 @@ public class UsuarioControllerMvcTest {
             .thenReturn(new ResponseGenericObject<UsuarioDTO>(
                 true, "msj"
                 , new UsuarioDTO("123123123", "correo@correo.com", "nombres"
-                    , "apellidos")
+                    , "apellidos", null)
             ));
 
         String requestBody = new ObjectMapper().writeValueAsString(
             new Usuario(0, "123123123", "correo@correo.com", "nombres", "apellidos"
             , "direccion", "contrasenna", null, new Perfil(1, "perfil", null)
-            , null, null)
+            , null, null, null)
         );
             
         MvcResult result =
@@ -204,7 +204,7 @@ public class UsuarioControllerMvcTest {
         String requestBody = new ObjectMapper().writeValueAsString(
             new Usuario(0, "123123123", "correo@correo.com", "nombres", "apellidos"
             , "direccion", "contrasenna", null, new Perfil(1, "perfil", null)
-            , null, null)
+            , null, null, null)
         );
             
         MvcResult result =
@@ -221,16 +221,16 @@ public class UsuarioControllerMvcTest {
     void testActualizarExitoso() throws Exception{
         when(usuarioService.actualizarUsuario(1, new Usuario(1, "123123123", "correo@correo.com", "nombres", "apellidos"
             , "direccion", "contrasenna", null, new Perfil(1, "perfil", null)
-            , null, null) ))
+            , null, null, null) ))
             .thenReturn(new ResponseGenericObject<UsuarioDTO>(
                 true, "msj", new UsuarioDTO("123123123", "correo@correo.com", "nombres"
-                    , "apellidos")
+                    , "apellidos", null)
             ));
 
         String requestBody = new ObjectMapper().writeValueAsString(
             new Usuario(1, "123123123", "correo@correo.com", "nombres", "apellidos"
             , "direccion", "contrasenna", null, new Perfil(1, "perfil", null)
-            , null, null)            
+            , null, null, null)            
         );
 
         MvcResult result = 
@@ -246,7 +246,7 @@ public class UsuarioControllerMvcTest {
     void testActualizarNoExitoso() throws Exception{
         when(usuarioService.actualizarUsuario(1, new Usuario(1, "123123123", "correo@correo.com", "nombres", "apellidos"
             , "direccion", "contrasenna", null, new Perfil(1, "perfil", null)
-            , null, null) ))
+            , null, null, null) ))
             .thenReturn(new ResponseGenericObject<UsuarioDTO>(
                 false, "msj", null
             ));
@@ -254,7 +254,7 @@ public class UsuarioControllerMvcTest {
         String requestBody = new ObjectMapper().writeValueAsString(
             new Usuario(1, "123123123", "correo@correo.com", "nombres", "apellidos"
             , "direccion", "contrasenna", null, new Perfil(1, "perfil", null)
-            , null, null)            
+            , null, null, null)            
         );
 
         MvcResult result = 
@@ -271,7 +271,7 @@ public class UsuarioControllerMvcTest {
         when(usuarioService.eliminarUsuarioPorId(1))
             .thenReturn(new ResponseGenericObject<UsuarioDTO>(
                 true, "msj", new UsuarioDTO("123123123", "correo@correo.com", "nombres"
-                    , "apellidos")
+                    , "apellidos", null)
             ));
 
         MvcResult result = 

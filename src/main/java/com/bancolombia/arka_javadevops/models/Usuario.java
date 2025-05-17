@@ -1,14 +1,18 @@
 package com.bancolombia.arka_javadevops.models;
 
 
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -26,6 +30,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("not null")
 public class Usuario {
 
     @Id
@@ -74,6 +81,6 @@ public class Usuario {
     @OneToMany(mappedBy = "usuarioCarritoCompra")
     private List<CarritoCompra> carritosCompra;
 
-
+    private Date fechaExpiracion;
     
 }
