@@ -92,7 +92,7 @@ public class UsuarioService {
         Usuario usuario = null;
         if(usuarioDto instanceof ExpirableUsuarioDTO){
             //Si entra aqui quiere decir que en la peticion se recibio el campo fechaExpiracion
-            usuario = usuarioMapper.ExpirableUsuarioDtoToUsuario(usuarioDto);
+            usuario = usuarioMapper.usuarioDTOToExpirableUsuario(usuarioDto);
         } else {
             //Si entra aqui quiere decir que en la peticion no se recibio el campo fechaExpiracion
             usuario = usuarioMapper.usuarioDtoToUsuario(usuarioDto);

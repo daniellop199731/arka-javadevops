@@ -5,6 +5,7 @@ import java.util.List;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 
+import com.bancolombia.arka_javadevops.DTO.ExpirableUsuarioDTO;
 import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
 import com.bancolombia.arka_javadevops.models.ExpirableUsuario;
 import com.bancolombia.arka_javadevops.models.Usuario;
@@ -22,7 +23,9 @@ public interface UsuarioMapper {
 
     //PASO 3: Se crea metodo mapper que convierte de ExpirableUsuarioDTO a Usuario
     //Siguiente paso: ver UsuarioService
-    ExpirableUsuario ExpirableUsuarioDtoToUsuario (UsuarioDTO usuarioDTO);    
+    ExpirableUsuario usuarioDTOToExpirableUsuario (UsuarioDTO usuarioDTO);    
+
+    List<ExpirableUsuarioDTO> usuariosToExpirableUsuarios(List<ExpirableUsuario> usuarios);
     
 }
 
