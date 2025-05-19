@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.bancolombia.arka_javadevops.DTO.ExpirableUsuarioDTO;
 import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
 import com.bancolombia.arka_javadevops.mappers.UsuarioMapper;
 import com.bancolombia.arka_javadevops.models.Usuario;
@@ -89,8 +88,8 @@ public class UsuarioService {
     public ResponseGenericObject<UsuarioDTO> crearNuevoUsuario(UsuarioDTO usuarioDto){
         rgObjDto = new ResponseGenericObject<>();
         //PASO 4: Validar cual DTO se recibe de la peticion para saber si el DTO, se convierte a ExpirableUsuario o a Usuario.
-        Usuario usuario = null;
-        if(usuarioDto instanceof ExpirableUsuarioDTO){
+        Usuario usuario = new Usuario();
+        if(Objects.nonNull(usuarioDto.getFechaExpiracion())){
             //Si entra aqui quiere decir que en la peticion se recibio el campo fechaExpiracion
             usuario = usuarioMapper.usuarioDTOToExpirableUsuario(usuarioDto);
         } else {
