@@ -44,7 +44,8 @@ public class ProductoService {
             rObj.setAsSuccessfully();
             rObj.setObj(producto.get());
         } else {
-            rObj.setMsj("No se encontró el producto");
+            rObj.setMsj("No se encontró el producto con id "
+                .concat(idProducto+""));
         }
         return rObj;
     }
