@@ -62,6 +62,8 @@ public class CarritoCompraProductoService {
     public ResponseObject agregarProductoCarrito(int idUsuario, int idProducto, int unidades){
         rgObjUsuarioDto = usuarioService.obtenerUsuarioPorId(idUsuario);
         if(!rgObjUsuarioDto.isSuccessfully()){
+            rObj.setAsNotSuccessfully();
+            rObj.setMsj(rgObjUsuarioDto.getMsj());
             return rObj;
         }
 
