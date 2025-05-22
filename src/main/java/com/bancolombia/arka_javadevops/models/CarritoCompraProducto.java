@@ -24,7 +24,6 @@ public class CarritoCompraProducto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     
     @ManyToOne
     @JoinColumn(name = "idCarritoCompra")
