@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.bancolombia.arka_javadevops.DTO.UsuarioDTO;
 import com.bancolombia.arka_javadevops.mappers.CarritoCompraProductoMapper;
 import com.bancolombia.arka_javadevops.models.CarritoCompra;
 import com.bancolombia.arka_javadevops.models.CarritoCompraProducto;
@@ -23,7 +22,7 @@ public class CarritoCompraProductoService {
     private final CarritoCompraProductoRepository carritoCompraProductoRepository;
 
     private final UsuarioService usuarioService;
-    private final ProductoService productoService;
+    private final ProductoServicePp productoService;
     private final CarritoCompraService carritoCompraService;
     private final CarritoCompraProductoMapper carritoCompraProductoMapper;
 

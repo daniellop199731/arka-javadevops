@@ -16,9 +16,13 @@ import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
 
+//PASO 0: Se cambia el nombre del servicio original, el indicativo Pp
+//Indica que es el servicio principal y alverga todos los servicios de productos
+//SIGUIENTE PASO: Ver ProductoServiceConsultas.java
+
 @Service
 @RequiredArgsConstructor
-public class ProductoService {
+public class ProductoServicePp {
 
     private final ProductoRepository productoRepository;
 
