@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bancolombia.arka_javadevops.DTO.ExpirableProductoDTO;
 import com.bancolombia.arka_javadevops.models.ExpirableProducto;
 import com.bancolombia.arka_javadevops.models.Producto;
 import com.bancolombia.arka_javadevops.services.ProductoService;

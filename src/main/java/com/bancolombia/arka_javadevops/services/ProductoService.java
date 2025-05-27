@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.bancolombia.arka_javadevops.DTO.ExpirableProductoDTO;
 import com.bancolombia.arka_javadevops.DTO.ProductoDTO;
 import com.bancolombia.arka_javadevops.mappers.ProductoMapper;
 import com.bancolombia.arka_javadevops.models.Categoria;
