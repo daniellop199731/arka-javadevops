@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bancolombia.arka_javadevops.DTO.ExpirableProductoDTO;
+import com.bancolombia.arka_javadevops.models.ExpirableProducto;
 import com.bancolombia.arka_javadevops.models.Producto;
 import com.bancolombia.arka_javadevops.services.ProductoService;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
@@ -76,6 +78,14 @@ public class ProductoController {
     public ResponseEntity<ResponseObject> crearNuevo(@Valid @RequestBody Producto producto) {
         return new ResponseEntity<>(productoService.crearNuevo(producto), HttpStatus.CREATED);
     }
+
+    //PASO 6: Se crea un nuevo endPoint o se modifica el existente 
+    //para recibir como parametro la clase extendida
+    @PostMapping("/crearNuevoV2")
+    public ResponseEntity<ResponseObject> crearNuevoV2(@Valid @RequestBody ExpirableProducto producto) {
+        ResponseObject response = productoService.crearNuevoV2(producto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }    
 
     ////// Ejemplo con DTO y Mapper
     @PostMapping("")

@@ -2,13 +2,17 @@ package com.bancolombia.arka_javadevops.models;
 
 import java.util.List;
 
+import com.bancolombia.arka_javadevops.models.enums.TipoProducto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -25,6 +29,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("not null")
 public class Producto {
 
     @Id
@@ -68,6 +75,12 @@ public class Producto {
     @JsonIgnore
     @OneToMany(mappedBy = "productoCarritoCompra")
     private List<CarritoCompraProducto> carritoCompraProductos;
+
+    //Paso 2: Crear atributo en la clase padre de tipo del enum antes creado en el 
+    //paso 1
+    //SIGUIENTE PASO: Ver ExpirableProducto.java
+    @JsonIgnore
+    protected TipoProducto tipoProducto = TipoProducto.NO_EXPIRABLE;
 
 
 }

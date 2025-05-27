@@ -1,12 +1,16 @@
 package com.bancolombia.arka_javadevops.services;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.bancolombia.arka_javadevops.DTO.ExpirableProductoDTO;
+import com.bancolombia.arka_javadevops.DTO.ProductoDTO;
 import com.bancolombia.arka_javadevops.mappers.ProductoMapper;
 import com.bancolombia.arka_javadevops.models.Categoria;
+import com.bancolombia.arka_javadevops.models.ExpirableProducto;
 import com.bancolombia.arka_javadevops.models.Producto;
 import com.bancolombia.arka_javadevops.repositories.ProductoRepository;
 import com.bancolombia.arka_javadevops.utils.ResponseObject;
@@ -102,6 +106,31 @@ public class ProductoService {
         rObj.setAsSuccessfully();
 
         return rObj;
+    }
+
+    //PASO 5: Crear nuevo servicio o modificar el existente para en los parametros
+    //se tenga la calse extendida
+    //SIGUIENTE PASO: Ver ProductoController.java
+    public ResponseObject crearNuevoV2(ExpirableProducto producto){
+        rObj = new ResponseObject();
+        Producto productoToPersist = null;
+        if(Objects.isNull(producto.getFechaExpiracion())){
+            //productoToPersist = productoMapper.fromDTO((ProductoDTO) producto);
+            productoToPersist = (Producto) producto;
+        } else {
+            productoToPersist = producto;
+        }
+
+        ProductoDTO productoToReturn = null;
+        Producto resultDB = productoRepository.save(productoToPersist);
+        if(resultDB instanceof ExpirableProducto){
+            productoToReturn = productoMapper.toDto((ExpirableProducto) resultDB);
+        } else {
+            productoToReturn = productoMapper.toDto(resultDB);
+        }
+        rObj.setAsSuccessfully("Producto creado con exito", productoToReturn);
+        return rObj;
+
     }
 
     public ResponseObject crearNuevoDto(Producto producto){
