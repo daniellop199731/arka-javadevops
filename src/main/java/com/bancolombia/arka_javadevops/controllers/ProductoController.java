@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 public class ProductoController {
 
-    private final ProductoServicePp productoService;
-
     //Paso 3: Se llama a la interfaz, en el paso 2 se agrega la anotacion 
     //@Primary para que spring implemente la clase con dicha anotacion
     private final ProductoServiceRead productoServiceRead;

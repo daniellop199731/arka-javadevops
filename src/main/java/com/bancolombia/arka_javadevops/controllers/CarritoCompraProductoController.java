@@ -47,9 +47,14 @@ public class CarritoCompraProductoController {
         @PathVariable(required = true) int idUsuario
         , @RequestBody List<CarritoCompraProducto> carritoCompraProductos    
     ) { 
-        return new ResponseEntity<>(
-            carritoCompraProductoService.agregarProductoCarrito(
-                idUsuario, carritoCompraProductos), HttpStatus.OK);
+        ResponseObject response = carritoCompraProductoService.agregarProductoCarrito(
+                idUsuario, carritoCompraProductos);
+
+        if(response.getSuccessfully()){
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     
 

@@ -1,6 +1,7 @@
 package com.bancolombia.arka_javadevops.services;
 
 import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 
 import com.bancolombia.arka_javadevops.models.Producto;
 import com.bancolombia.arka_javadevops.repositories.ProductoRepository;
@@ -8,6 +9,7 @@ import com.bancolombia.arka_javadevops.services.interfaces.ProductoServiceUtils;
 
 import lombok.RequiredArgsConstructor;
 
+@Component
 @RequiredArgsConstructor
 @Primary
 public class ProductoServiceUtilsImp implements ProductoServiceUtils {

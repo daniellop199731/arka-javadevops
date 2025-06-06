@@ -3,6 +3,7 @@ package com.bancolombia.arka_javadevops.services;
 import java.util.Optional;
 
 import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
 
 import com.bancolombia.arka_javadevops.models.Producto;
 import com.bancolombia.arka_javadevops.repositories.ProductoRepository;
@@ -12,6 +13,7 @@ import com.bancolombia.arka_javadevops.utils.ResponseObject;
 
 import lombok.RequiredArgsConstructor;
 
+@Service
 @RequiredArgsConstructor
 @Primary
 public class ProductoServiceModImp implements ProductoServiceMod {

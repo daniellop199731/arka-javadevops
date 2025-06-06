@@ -86,6 +86,11 @@ public class CarritoCompraProductoService {
     }    
 
     public ResponseObject agregarProductoCarrito(int idUsuario, List<CarritoCompraProducto> carritoCompraProductos){
+
+        /*IMPORTANTE:Al pagar el valor del carrito de compras es que se deben descontar 
+         las unidades del inventario, ya que el pago significa que el cliente
+        esta dispuesto a pagar el valor del carrito. */
+
         rObj = new ResponseObject();
         rObj = usuarioService.obtenerUsuarioPorIdWitOutDto(idUsuario);
         if(!rObj.getSuccessfully()){
